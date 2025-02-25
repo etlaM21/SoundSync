@@ -1,18 +1,29 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <title>SoundSync v0.1</title>
-</head>
-<body>
-    <!-- 1) Simple HTML UI elements to get us started -->
-    <h1>Your first panel</h1>
+    <head>
+        <meta charset="utf-8">
+        <title>SoundSync v0.1</title>
+        <style>
+            body {
+            font-family: Arial, sans-serif;
+            padding: 10px;
+            }
+            input, button {
+            padding: 10px;
+            margin: 5px;
+            }
+            #duplicate-btn {
+            background-color: #0078D4;
+            color: white;
+            }
+        </style>
+    </head>
+    <body>
+        <h2>BPM Layer Duplicator</h2>
+        <input type="number" id="bpm-input" placeholder="Enter BPM" value="120" />
+        <button id="duplicate-btn">Duplicate Layer on BPM</button>
 
-    <!-- 2) A button -->
-    <button id="open-button">Open</button>
-
-    <!-- 3) Add your script dependencies here, including CEP's CSInterface.js library -->
-    <script type="text/javascript" src="CSInterface.js"></script>
-    <script type="text/javascript" src="index.js"></script>
-</body>
+        <script type="text/javascript" src="CSInterface.js"></script>
+        <script type="text/javascript" src="index.js"></script>
+    </body>
 </html>

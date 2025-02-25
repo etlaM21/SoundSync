@@ -1,11 +1,18 @@
-/* 1) Create an instance of CSInterface. */
-var csInterface = new CSInterface();
+// Initialize CSInterface
+const csInterface = new CSInterface();
 
-/* 2) Make a reference to your HTML button and add a click handler. */
-var openButton = document.querySelector("#open-button");
-openButton.addEventListener("click", openDoc);
+// Get elements from the DOM
+const bpmInput = document.getElementById("bpm-input");
+const duplicateButton = document.getElementById("duplicate-btn");
 
-/* 3) Write a helper function to pass instructions to the ExtendScript side. */
-function openDoc() {
-  csInterface.evalScript("openDocument()");
-}
+// When the button is clicked, call the AE script with the BPM value
+duplicateButton.addEventListener("click", () => {
+  const bpm = parseInt(bpmInput.value);
+  if (isNaN(bpm)) {
+    alert("Please enter a valid BPM!");
+    return;
+  }
+
+  // Send the BPM to the After Effects host script to handle the duplication
+  csInterface.evalScript(`duplicateLayerOnBeat(${bpm})`);
+});
