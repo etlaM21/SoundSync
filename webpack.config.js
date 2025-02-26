@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
   mode: 'development',
@@ -14,6 +15,7 @@ module.exports = {
     static: {
       directory: path.resolve(__dirname, 'dist'),
     },
+    hot: true,
     compress: true,
     port: 9000,
   },
@@ -39,4 +41,7 @@ module.exports = {
     extensions: ['.js', '.jsx'],
   },
   devtool: 'inline-source-map',
+  plugins: [
+    new webpack.HotModuleReplacementPlugin(),
+  ]
 };
