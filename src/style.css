@@ -1,3 +1,85 @@
+:root {
+    --semi-grey: #1d1d1d;
+    --dark-grey: #0e0e0e;
+    --light-grey: #303030;
+    --dark: #000000;
+    --light: #b0b0b0;
+    --lightest: #d0d0d0;
+    --highlight: #4096f3;
+}
+
 body {
-    background-color: lightblue;
-}  
+    background-color: transparent;
+    font-family: 'Source Sans Pro', Arial, Helvetica, sans-serif;
+    color: var(--light);
+}
+
+button, input, label {
+    margin-right: 3px;
+}
+
+button, input {
+    border-radius: 3px;
+    border: solid 3px var(--light-grey);
+    background-color: var(--dark-grey);
+    padding: 1.5px 3px;
+    text-transform: uppercase;
+    color: var(--light);
+    &:hover, &:focus {
+        background-color: var(--dark);
+        color: var(--lightest);
+    }
+    &:focus {
+        border-color: var(--highlight);
+    }
+}
+
+#timeline {
+    display: block;
+    position: relative;
+    min-width: 100%;
+    min-height: 150px;
+    border-radius: 3px;
+    border: solid 3px var(--light-grey);
+    background-color: transparent;
+    .grid-bar, .grid-beat, .grid-layers {
+        column-gap: 3px;
+        min-width: 100%;
+    }
+    .grid-bar, .grid-beat {
+        min-height: 150px;
+    }
+    .grid-bar {
+        display: grid;
+        grid-template: repeat(1, 1fr) / repeat(3, 1fr);
+        background-color: var(--light-grey); /* Color of bar vertical lines */
+        .grid-beat {
+            display: grid;
+            grid-template: repeat(1, 1fr) / repeat(4, 1fr);
+            background-color: var(--semi-grey); /* Color of beat vertical lines */
+            .grid-beat-fill {
+                background-color: var(--dark-grey);
+            }
+        }
+    }
+    .grid-layers {
+        position: absolute;
+        top: 10px;
+        display: grid;
+        grid-template: repeat(1, 1fr) / repeat(12, 1fr);
+        background-color: transparent;
+        .timeline-layer {
+            background-color: darkorchid;
+            border-radius: 3px;
+            border: solid 3px var(--light-grey);
+            padding: 3px;
+            grid-column-start: 3;
+            grid-column-end: 6;
+            &:nth-of-type(1) {
+                background-color: darkcyan;
+                grid-column-start: 5;
+                grid-column-end: 12;
+            }
+        }
+    }
+}
