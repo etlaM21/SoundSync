@@ -49,15 +49,15 @@ button, input {
     .grid-bar, .grid-beat {
         min-height: 150px;
     }
-    .grid-bar {
+    .grid-timeline {
         display: grid;
-        grid-template: repeat(1, 1fr) / repeat(3, 1fr);
+        grid-template: 100% / repeat(3, 1fr);
         background-color: var(--light-grey); /* Color of bar vertical lines */
-        .grid-beat {
+        .grid-bar {
             display: grid;
             grid-template: repeat(1, 1fr) / repeat(4, 1fr);
             background-color: var(--semi-grey); /* Color of beat vertical lines */
-            .grid-beat-fill {
+            .grid-beat {
                 background-color: var(--dark-grey);
             }
         }
