@@ -16,6 +16,8 @@ const App = () => {
         setBeatsPerBar(e.target.value);
     }
 
+    const timeSignature = 4;
+
     const [zoomLevel, setZoomLevel] = useState(1.0);
 
     const increaseZoom = () => {setZoomLevel(zoomLevel + 0.25)};
@@ -26,10 +28,12 @@ const App = () => {
         durationMilli: 43 * 1000
     }
 
-    const beatsPerSecond = bpm / 60;
-    const totalBeats = useMemo(() => Math.floor(dummyCompData.duration * beatsPerSecond), [bpm]);
-    const roundedBeats = useMemo(() => Math.ceil(totalBeats / beatsPerBar) * beatsPerBar, [bpm]);
-    const totalBars = Math.ceil(totalBeats / beatsPerBar);
+    const beatsPerSecond = bpm / 60 * (beatsPerBar / 4);
+    const beatsPerSignature = bpm / 60 * (timeSignature / 4);
+    const totalBeats = useMemo(() => Math.floor(dummyCompData.duration * beatsPerSecond), [bpm, beatsPerBar]);
+    const totalBeatsPerSignature = useMemo(() => Math.floor(dummyCompData.duration * beatsPerSignature), [bpm]);
+    const roundedBeats = useMemo(() => Math.ceil(totalBeats / beatsPerBar) * beatsPerBar, [bpm, beatsPerBar]);
+    const totalBars = Math.ceil((totalBeatsPerSignature) / timeSignature);
 
     const dummyLayerData  = [ {
             name: "My Cool Animation",
