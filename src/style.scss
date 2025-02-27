@@ -14,11 +14,11 @@ body {
     color: var(--light);
 }
 
-button, input, label {
+button, input, label, select {
     margin-right: 3px;
 }
 
-button, input {
+button, input, select, option {
     border-radius: 3px;
     border: solid 3px var(--light-grey);
     background-color: var(--dark-grey);
@@ -65,15 +65,14 @@ button, input {
     }
     .grid-layers {
         position: absolute;
-        top: 10px;
         display: grid;
         grid-template: repeat(1, 1fr) / repeat(12, 1fr);
         background-color: transparent;
         .timeline-layer {
             background-color: darkorchid;
             border-radius: 3px;
-            border: solid 3px var(--light-grey);
             padding: 3px;
+            margin-top: 6px;
             grid-column-start: 3;
             grid-column-end: 6;
             &:nth-of-type(1) {
