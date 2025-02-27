@@ -21,7 +21,7 @@ const App = () => {
     const [zoomLevel, setZoomLevel] = useState(1.0);
 
     const increaseZoom = () => {setZoomLevel(zoomLevel + 0.25)};
-    const decreaseZoom = () => {setZoomLevel(zoomLevel - 0.25)};
+    const decreaseZoom = () => {zoomLevel - 0.25 >= 1.0 ? setZoomLevel(zoomLevel - 0.25) : null};
 
     const dummyCompData = {
         duration: 43,
