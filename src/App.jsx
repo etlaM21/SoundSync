@@ -4,7 +4,7 @@ import './style.scss'
 
 const App = () => {
 
-    const [bpm, setBpm] = useState(120);
+    const [bpm, setBpm] = useState(120.0);
     const bpmInput = useRef(null);
 
     const handleBpmFormChange = (e) => {
@@ -14,6 +14,11 @@ const App = () => {
     const setBpmFromForm = () => {
         setBpm(bpmInput.current.value)
     }
+
+    const [zoomLevel, setZoomLevel] = useState(1.0);
+
+    const increaseZoom = () => {setZoomLevel(zoomLevel + 0.25)};
+    const decreaseZoom = () => {setZoomLevel(zoomLevel - 0.25)};
 
     const dummyCompData = {
         duration: 43,
@@ -49,14 +54,16 @@ const App = () => {
     <main>
         <div id='settings'>
             <label htmlFor='bpm'>BPM</label><input name='bpm' type='number' size='3' value={bpm} onChange={handleBpmFormChange} ref={bpmInput}/> <button onClick={setBpmFromForm}>set</button>
+            <button onClick={increaseZoom}>zoom in</button>
+            <button onClick={decreaseZoom}>zoom out</button>
         </div>
       <hr />
         <div id='timeline'>
-            <div className='grid-layers'  style={{gridTemplate: `100% / repeat(${totalBars * beatsPerBar}, 1fr)`}}>
+            <div className='grid-layers'  style={{gridTemplate: `100% / repeat(${totalBars * beatsPerBar}, 1fr)`, width: `${100 * zoomLevel}%`}}>
                 <div className='timeline-layer'>MyAnimation</div>
                 <div className='timeline-layer'>MyAnimation2</div>
             </div>
-            <div className='grid-timeline' style={{gridTemplate: `100% / repeat(${totalBars}, 1fr)`}}>
+            <div className='grid-timeline' style={{gridTemplate: `100% / repeat(${totalBars}, 1fr)`, width: `${100 * zoomLevel}%`}}>
                 {Array.from({ length: totalBars }).map((_, barIndex) => (
                     <div key={barIndex} className='grid-bar' style={{gridTemplate: `100% / repeat(${beatsPerBar}, 1fr)`}}>
                         {Array.from({ length: beatsPerBar }).map((_, beatIndex) => (

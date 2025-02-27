@@ -42,6 +42,7 @@ button, input {
     border-radius: 3px;
     border: solid 3px var(--light-grey);
     background-color: transparent;
+    overflow-x: auto;
     .grid-bar, .grid-beat, .grid-layers {
         column-gap: 3px;
         min-width: 100%;
