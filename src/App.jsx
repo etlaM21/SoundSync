@@ -28,10 +28,51 @@ const App = () => {
         durationMilli: 43 * 1000
     }
 
+    var placeholderCompData = {
+        name: "Placeholder Comp",
+        duration: 42,
+        frameRate: 69,
+        width: 1920,
+        height: 1080,
+        layers: []
+    };
+
+    const [compData, setCompData] = useState(placeholderCompData);
+
+    const fetchCompData = async () => {
+        return new Promise((resolve, reject) => {
+            if (!window.CSInterface) {
+                reject("CSInterface is not available. Make sure CSInterface.js is loaded.");
+                return;
+            }
+    
+            const csInterface = new window.CSInterface();
+            csInterface.evalScript("getCompData()", (result) => {
+                console.log("Raw ExtendScript Response:", result); // Debugging
+                try {
+                    const data = JSON.parse(result);
+                    if (data.error) reject(data.error);
+                    else resolve(data);
+                } catch (e) {
+                    reject("Invalid JSON response from ExtendScript.");
+                }
+            });
+        });
+    };
+    
+
+    const updateView = () => {
+        fetchCompData()
+            .then((data) => {
+                setCompData(data);
+            })
+            .catch((error) => console.error("Error fetching comp data:", error));
+    }
+
     const beatsPerSecond = bpm / 60 * (beatsPerBar / 4);
     const beatsPerSignature = bpm / 60 * (timeSignature / 4);
-    const totalBeats = useMemo(() => Math.floor(dummyCompData.duration * beatsPerSecond), [bpm, beatsPerBar]);
-    const totalBeatsPerSignature = useMemo(() => Math.floor(dummyCompData.duration * beatsPerSignature), [bpm]);
+    const totalBeats = useMemo(() => Math.floor(compData.duration * beatsPerSecond), [bpm, beatsPerBar]);
+    const totalBeatsPerSignature = useMemo(() => Math.floor(compData.duration * beatsPerSignature), [bpm]);
     const roundedBeats = useMemo(() => Math.ceil(totalBeats / beatsPerBar) * beatsPerBar, [bpm, beatsPerBar]);
     const totalBars = Math.ceil((totalBeatsPerSignature) / timeSignature);
 
@@ -79,6 +120,7 @@ const App = () => {
   return (
     <main>
         <div id='settings'>
+            <button onClick={updateView}>UPDATE</button>
             <label htmlFor='bpm'>BPM</label><input name='bpm' type='number' size='3' value={bpm} onChange={handleBpmFormChange} />
             <select name='beatsPerBar' id='beatsPerBarSelect' onChange={handleBeatsPerBarFormChange}>
                 <option value='2'>2</option>
@@ -92,16 +134,16 @@ const App = () => {
       <hr />
         <div id='timeline'>
             <div className='grid-layers' ref={timelineRef} style={{gridTemplate: `100% / repeat(${roundedBeats}, 1fr)`, width: `${100 * zoomLevel}%`}}>
-                {dummyLayerData.map((layer, index) => {
+                {compData.layers.map((layer, index) => {
 
-                    const gridStart = Math.floor(layer.inPoint / dummyCompData.duration * totalBeats) + 1;
-                    const gridEnd = Math.ceil(layer.outPoint / dummyCompData.duration * totalBeats) + 1;
+                    const gridStart = Math.floor(layer.inPoint / compData.duration * totalBeats) + 1;
+                    const gridEnd = Math.ceil(layer.outPoint / compData.duration * totalBeats) + 1;
                     const gridDuration = gridEnd - gridStart;
 
-                    const layerScaling = layer.duration / (gridDuration * (dummyCompData.duration / totalBeats));
+                    const layerScaling = layer.duration / (gridDuration * (compData.duration / totalBeats));
 
                     const baseGridX = (gridStart - 1) * beatWidth; 
-                    const trueX = (layer.inPoint / dummyCompData.duration) * timelineWidth;
+                    const trueX = (layer.inPoint / compData.duration) * timelineWidth;
 
                     const translateX = trueX - baseGridX;
 
@@ -140,7 +182,7 @@ const App = () => {
         </div>
         <hr />
         <div id='information'>
-            <p><small>comp duration: {dummyCompData.duration} seconds | total beats: {totalBeats} | total bars: {totalBars} | beats per second: {beatsPerSecond}</small></p>
+            <p><small>comp duration: {compData.duration} seconds | total beats: {totalBeats} | total bars: {totalBars} | beats per second: {beatsPerSecond}</small></p>
         </div>
     </main>
   );
