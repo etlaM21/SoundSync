@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import './style.scss'
 
 const App = () => {
@@ -34,6 +34,27 @@ const App = () => {
     const totalBeatsPerSignature = useMemo(() => Math.floor(dummyCompData.duration * beatsPerSignature), [bpm]);
     const roundedBeats = useMemo(() => Math.ceil(totalBeats / beatsPerBar) * beatsPerBar, [bpm, beatsPerBar]);
     const totalBars = Math.ceil((totalBeatsPerSignature) / timeSignature);
+
+
+    const timelineRef = useRef(null); // Reference for the timeline container
+    const [timelineWidth, setTimelineWidth] = useState(0); // Store actual width in pixels
+
+    useEffect(() => {
+        if (timelineRef.current) {
+            setTimelineWidth(timelineRef.current.getBoundingClientRect().width);
+        }
+
+        // Optional: Update width on window resize
+        const handleResize = () => {
+            if (timelineRef.current) {
+                setTimelineWidth(timelineRef.current.getBoundingClientRect().width);
+            }
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    const beatWidth = timelineWidth / totalBeats; // Now we have the actual pixel width per beat!
 
     const dummyLayerData  = [ {
             name: "My Cool Animation",
@@ -70,15 +91,31 @@ const App = () => {
         </div>
       <hr />
         <div id='timeline'>
-            <div className='grid-layers'  style={{gridTemplate: `100% / repeat(${roundedBeats}, 1fr)`, width: `${100 * zoomLevel}%`}}>
+            <div className='grid-layers' ref={timelineRef} style={{gridTemplate: `100% / repeat(${roundedBeats}, 1fr)`, width: `${100 * zoomLevel}%`}}>
                 {dummyLayerData.map((layer, index) => {
 
                     const gridStart = Math.floor(layer.inPoint / dummyCompData.duration * totalBeats) + 1;
-                    const gridEnd = Math.floor(layer.outPoint / dummyCompData.duration * totalBeats) + 1;
+                    const gridEnd = Math.ceil(layer.outPoint / dummyCompData.duration * totalBeats) + 1;
+                    const gridDuration = gridEnd - gridStart;
+
+                    const layerScaling = layer.duration / (gridDuration * (dummyCompData.duration / totalBeats));
+
+                    const baseGridX = (gridStart - 1) * beatWidth; 
+                    const trueX = (layer.inPoint / dummyCompData.duration) * timelineWidth;
+
+                    const translateX = trueX - baseGridX;
 
                     return (
-                        <div key={index} className='timeline-layer' style={{ gridColumnStart: gridStart, gridColumnEnd: gridEnd, gridRow: index + 1 }}>
-                            {layer.name}
+                        <div key={index} className='timeline-layer' style={{ 
+                            gridColumnStart: gridStart,
+                            gridColumnEnd: gridEnd,
+                            gridRow: index + 1,
+                            transform: `scaleX(${layerScaling}) translateX(calc(${trueX}px - ${baseGridX}px)`,
+                            transformOrigin: "left"
+                            }}>
+                            <span style={{ display: "inline-block", transform: "scaleX(1)" }}>
+                                {layer.name}
+                            </span>
                         </div>
                     );
                 })}
@@ -92,7 +129,6 @@ const App = () => {
                             const currentTotalBeats= ((barIndex ) * beatsPerBar) + (beatIndex + 1);
 
                             if(currentTotalBeats <= totalBeats) {
-                                    console.log("currentTotalBeats", currentTotalBeats);
                                     return(<div key={beatIndex} className='grid-beat' />);
                             }
                             
