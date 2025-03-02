@@ -133,7 +133,7 @@ const App = () => {
         </div>
       <hr />
         <div id='timeline'>
-            <div className='grid-layers' ref={timelineRef} style={{gridTemplate: `100% / repeat(${roundedBeats}, 1fr)`, width: `${100 * zoomLevel}%`}}>
+            <div className='grid-layers' ref={timelineRef} style={{gridTemplate: `auto / repeat(${roundedBeats}, 1fr)`, width: `${100 * zoomLevel}%`}}>
                 {compData.layers.map((layer, index) => {
 
                     const gridStart = Math.floor(layer.inPoint / compData.duration * totalBeats) + 1;

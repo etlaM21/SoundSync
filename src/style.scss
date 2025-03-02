@@ -38,7 +38,7 @@ button, input, select, option {
 }
 
 hr {
-    color: var(--lightest);
+    border: 1px solid var(--dark);
 }
 
 label {
@@ -85,6 +85,7 @@ label {
         display: grid;
         grid-template: repeat(1, 1fr) / repeat(12, 1fr);
         background-color: transparent;
+        height: auto;
         .timeline-layer {
             background-color: darkorchid;
             border-radius: 3px;
@@ -93,11 +94,6 @@ label {
             margin-bottom: 3px;
             grid-column-start: 3;
             grid-column-end: 6;
-            &:nth-of-type(1) {
-                background-color: darkcyan;
-                grid-column-start: 5;
-                grid-column-end: 12;
-            }
         }
     }
 }
