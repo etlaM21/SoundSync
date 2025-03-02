@@ -18,27 +18,40 @@ button, input, label, select {
     margin-right: 3px;
 }
 
-button, input, select, option {
+button, input, select, option, label {
     border-radius: 3px;
-    border: solid 3px var(--light-grey);
+    border: solid 1.5px var(--light-grey);
     background-color: var(--dark-grey);
     padding: 1.5px 3px;
     text-transform: uppercase;
     color: var(--light);
+}
+
+button, input, select, option {
     &:hover, &:focus {
         background-color: var(--dark);
         color: var(--lightest);
     }
     &:focus {
-        border-color: var(--highlight);
+        border: solid 1.5px var(--highlight);
     }
+}
+
+hr {
+    color: var(--lightest);
+}
+
+label {
+    font-size: calc(1rem - 2.5px);
+    padding-bottom: 0.5px;
+    padding-right: 6px;
+    margin-right: -3px;
 }
 
 #timeline {
     display: block;
     position: relative;
     min-width: 100%;
-    min-height: 150px;
     border-radius: 3px;
     border: solid 3px var(--light-grey);
     background-color: transparent;
@@ -48,9 +61,14 @@ button, input, select, option {
         min-width: 100%;
     }
     .grid-bar, .grid-beat {
-        min-height: 150px;
+        height: 100%;
     }
     .grid-timeline {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -10;
+        height: 100%;
         display: grid;
         grid-template: 100% / repeat(3, 1fr);
         background-color: var(--light-grey); /* Color of bar vertical lines */
@@ -64,7 +82,6 @@ button, input, select, option {
         }
     }
     .grid-layers {
-        position: absolute;
         display: grid;
         grid-template: repeat(1, 1fr) / repeat(12, 1fr);
         background-color: transparent;
@@ -72,7 +89,8 @@ button, input, select, option {
             background-color: darkorchid;
             border-radius: 3px;
             padding: 3px;
-            margin-top: 6px;
+            margin-top: 3px;
+            margin-bottom: 3px;
             grid-column-start: 3;
             grid-column-end: 6;
             &:nth-of-type(1) {
