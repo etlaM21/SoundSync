@@ -1,0 +1,7 @@
+<ExtensionList>
+    <Extension Id="com.maltehillebrand.soundsync.panel">
+        <HostList>
+            <Host Name="AEFT" Port="42069"/>
+        </HostList>
+    </Extension>
+</ExtensionList>
