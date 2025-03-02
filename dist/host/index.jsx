@@ -28,8 +28,6 @@ function duplicateLayerOnBeat(bpm) {
   app.endUndoGroup();
 }
 
-duplicateLayerOnBeat(120);
-
 function getCompData() {
   var comp = app.project.activeItem;
   if (!comp || !(comp instanceof CompItem)) {
