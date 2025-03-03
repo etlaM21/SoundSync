@@ -73,6 +73,8 @@ const App = () => {
             .catch((error) => console.error("Error fetching comp data:", error));
     }
 
+    window.addEventListener("focus", updateView);
+
     const beatsPerSecond = bpm / 60 * (beatsPerBar / 4);
     const beatsPerSignature = bpm / 60 * (timeSignature / 4);
     const totalBeats = useMemo(() => Math.floor(compData.duration * beatsPerSecond), [bpm, compData, beatsPerBar]);
