@@ -97,25 +97,6 @@ const App = () => {
 
     const beatWidth = timelineWidth / totalBeats; // Now we have the actual pixel width per beat!
 
-    const dummyLayerData  = [ {
-            name: "My Cool Animation",
-            inPoint: 5.2,
-            outPoint: 15,
-            duration: 15 - 5.2
-        },
-        {
-            name: "Some other Animation",
-            inPoint: 12,
-            outPoint: 36.5,
-            duration: 36.5 - 12
-        },
-        {
-            name: "Background",
-            inPoint: 0,
-            outPoint: 43,
-            duration: 43 - 0
-        }
-    ]
 
   return (
     <main>
@@ -152,6 +133,7 @@ const App = () => {
                             gridColumnStart: gridStart,
                             gridColumnEnd: gridEnd,
                             gridRow: index + 1,
+                            backgroundColor: `rgb(${layer.color[0]}, ${layer.color[1]}, ${layer.color[2]})`,
                             transform: `scaleX(${layerScaling}) translateX(calc(${trueX}px - ${baseGridX}px)`,
                             transformOrigin: "left"
                             }}>
