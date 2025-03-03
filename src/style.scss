@@ -12,10 +12,15 @@ body {
     background-color: transparent;
     font-family: 'Source Sans Pro', Arial, Helvetica, sans-serif;
     color: var(--light);
+    font-size: 1rem;
 }
 
 button, input, label, select {
     margin-right: 3px;
+}
+
+button, input, select, svg {
+    cursor: pointer;
 }
 
 button, input, select, option, label {
@@ -27,13 +32,24 @@ button, input, select, option, label {
     color: var(--light);
 }
 
+svg {
+    height: calc(1rem - 1px);
+    width: auto;
+    margin-right: 4.5px;
+    fill: var(--light);
+    transform: translateY(2px);
+    &:hover, &:focus {
+        fill: var(--lightest);
+    }
+}
+
 button, input, select, option {
     &:hover, &:focus {
         background-color: var(--dark);
         color: var(--lightest);
     }
     &:focus {
-        border: solid 1.5px var(--highlight);
+        outline: solid 1.5px var(--highlight);
     }
 }
 
@@ -44,8 +60,13 @@ hr {
 label {
     font-size: calc(1rem - 2.5px);
     padding-bottom: 0.5px;
+    padding-top: 0.5px;
     padding-right: 6px;
     margin-right: -3px;
+}
+
+#settings {
+    margin-top: -3px;
 }
 
 #timeline {

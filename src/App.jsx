@@ -1,6 +1,10 @@
 import React from 'react';
 import { useState, useMemo, useRef, useEffect } from 'react';
-import './style.scss'
+import './style.scss';
+
+import IconReload from './assets/icons/reload-icon.svg';
+import IconZoomIn from './assets/icons/zoom-in-icon.svg';
+import IconZoomOut from './assets/icons/zoom-out-icon.svg';
 
 const App = () => {
 
@@ -101,16 +105,16 @@ const App = () => {
   return (
     <main>
         <div id='settings'>
-            <button onClick={updateView}>UPDATE</button>
-            <label htmlFor='bpm'>BPM</label><input name='bpm' type='number' size='3' value={bpm} onChange={handleBpmFormChange} />
+            <IconReload onClick={updateView} />
+            <label htmlFor='bpm'>BPM</label><input name='bpm' type='number' size='3' style={{width: '3rem'}} value={bpm} onChange={handleBpmFormChange} />
             <select name='beatsPerBar' id='beatsPerBarSelect' onChange={handleBeatsPerBarFormChange}>
                 <option value='2'>2</option>
                 <option value='4' selected>4</option>
                 <option value='8'>8</option>
                 <option value='16'>16</option>
             </select>
-            <button onClick={increaseZoom}>zoom in</button>
-            <button onClick={decreaseZoom}>zoom out</button>
+            <IconZoomIn onClick={increaseZoom} style={{marginLeft: '1.5px'}}/>
+            <IconZoomOut onClick={decreaseZoom} />
         </div>
       <hr />
         <div id='timeline'>
