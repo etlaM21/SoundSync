@@ -1,15 +1,15 @@
 const path = require('path');
 const webpack = require('webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   mode: 'development',
   entry: {
-    'client-bundle': './src/index.js',  // Main client script
-    'host/index': './src/host/index.jsx' // Host script
+    'client-bundle': './src/index.js'
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: '[name].js', // This will create client-bundle.js and host/index.js
+    filename: '[name].js',
   },
   devServer: {
     static: {
@@ -33,8 +33,8 @@ module.exports = {
       },
       {
         test: /\.(s(a|c)ss)$/,
-        use: ['style-loader','css-loader', 'sass-loader']
-     }
+        use: ['style-loader', 'css-loader', 'sass-loader']
+      }
     ],
   },
   resolve: {
@@ -43,5 +43,12 @@ module.exports = {
   devtool: 'inline-source-map',
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-  ]
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'src/CSXS/manifest.xml', to: 'CSXS/manifest.xml' },
+        { from: 'src/host/index.jsx', to: 'host/' },
+        { from: 'src/CSInterface.js', to: '' }
+      ],
+    }),
+  ],
 };
