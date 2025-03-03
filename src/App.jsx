@@ -30,10 +30,10 @@ const App = () => {
 
     var placeholderCompData = {
         name: "Placeholder Comp",
-        duration: 42,
-        frameRate: 69,
-        width: 1920,
-        height: 1080,
+        duration: 0,
+        frameRate: 0,
+        width: 0,
+        height: 0,
         layers: []
     };
 
@@ -71,9 +71,9 @@ const App = () => {
 
     const beatsPerSecond = bpm / 60 * (beatsPerBar / 4);
     const beatsPerSignature = bpm / 60 * (timeSignature / 4);
-    const totalBeats = useMemo(() => Math.floor(compData.duration * beatsPerSecond), [bpm, beatsPerBar]);
-    const totalBeatsPerSignature = useMemo(() => Math.floor(compData.duration * beatsPerSignature), [bpm]);
-    const roundedBeats = useMemo(() => Math.ceil(totalBeats / beatsPerBar) * beatsPerBar, [bpm, beatsPerBar]);
+    const totalBeats = useMemo(() => Math.floor(compData.duration * beatsPerSecond), [bpm, compData, beatsPerBar]);
+    const totalBeatsPerSignature = useMemo(() => Math.floor(compData.duration * beatsPerSignature), [bpm, compData]);
+    const roundedBeats = useMemo(() => Math.ceil(totalBeats / beatsPerBar) * beatsPerBar, [bpm, compData, beatsPerBar]);
     const totalBars = Math.ceil((totalBeatsPerSignature) / timeSignature);
 
 
