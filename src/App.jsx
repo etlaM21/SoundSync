@@ -117,8 +117,8 @@ const App = () => {
             </select>
             <IconZoomIn onClick={increaseZoom} style={{marginLeft: '1.5px'}}/>
             <IconZoomOut onClick={decreaseZoom} />
+            <hr />
         </div>
-      <hr />
         <div id='timeline'>
             <div className='grid-layers' ref={timelineRef} style={{gridTemplate: `auto / repeat(${roundedBeats}, 1fr)`, width: `${100 * zoomLevel}%`}}>
                 {compData.layers.map((layer, index) => {
@@ -168,8 +168,8 @@ const App = () => {
             })}
             </div>
         </div>
-        <hr />
         <div id='information'>
+            <hr />
             <p><small>comp duration: {compData.duration} seconds | total beats: {totalBeats} | total bars: {totalBars} | beats per second: {beatsPerSecond}</small></p>
         </div>
     </main>
