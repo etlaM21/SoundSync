@@ -77,7 +77,7 @@ main {
     height: 100%;
 }
 
-#settings {
+#toolbar {
     width: 100%;
     flex: 0;
     margin-top: -3px;
@@ -86,6 +86,11 @@ main {
 #information {
     width: 100%;
     flex: 0;
+    p {
+        &:has(small) {
+            margin-top: 0;
+        }
+    }
 }
 
 #timeline {
@@ -108,7 +113,7 @@ main {
         height: 100%;
     }
     .grid-timeline {
-        position: absolute;
+        position: sticky;
         top: 0;
         left: 0;
         z-index: -10;
@@ -129,7 +134,7 @@ main {
         display: grid;
         grid-template: repeat(1, 1fr) / repeat(12, 1fr);
         background-color: transparent;
-        height: auto;
+        height: 0;
         .timeline-layer {
             background-color: darkorchid;
             border-radius: 3px;
@@ -138,6 +143,8 @@ main {
             margin-bottom: 6px;
             grid-column-start: 3;
             grid-column-end: 6;
+            font-size: 0.9rem;
+            white-space: nowrap;
             span {
                 color: #ffffff;
                 mix-blend-mode: difference;
