@@ -8,11 +8,22 @@ const App = () => {
     const [beatsPerBar, setBeatsPerBar] = useState(4);
     const [zoomLevel, setZoomLevel] = useState(1.0);
     const timeSignature = 4;
-
+    console.log("__IS_DEV__ value:", __IS_DEV__);
     const increaseZoom = () => setZoomLevel(zoomLevel + 0.25);
     const decreaseZoom = () => zoomLevel - 0.25 >= 1.0 ? setZoomLevel(zoomLevel - 0.25) : null;
 
-    const placeholderCompData = { name: "Placeholder Comp", duration: 0, frameRate: 0, width: 0, height: 0, layers: [] };
+    let placeholderCompData = { name: "Placeholder Comp", duration: 0, frameRate: 0, width: 0, height: 0, layers: [] };
+    if (__IS_DEV__) {
+        console.log("Running in development mode!");
+        placeholderCompData = { name: "Dummy Comp", duration: 48, frameRate: 30, width: 1080, height: 1080, 
+            layers: [
+                { name: "Layoer 01", inPoint: 12, outPoint: 35, duration: 35-12, color: [Math.random()*255, Math.random()*255, Math.random()*255] },
+                { name: "Layoer 02", inPoint: 5, outPoint: 21, duration: 21-5, color: [Math.random()*255, Math.random()*255, Math.random()*255] },
+                { name: "Layoer 03", inPoint: 7.8, outPoint: 46, duration: 46-7.8, color: [Math.random()*255, Math.random()*255, Math.random()*255] },
+                { name: "Layoer 04", inPoint: 1, outPoint: 3, duration: 3-1, color: [Math.random()*255, Math.random()*255, Math.random()*255] },
+                { name: "Layoer 05", inPoint: 35, outPoint: 48, duration: 48-35, color: [Math.random()*255, Math.random()*255, Math.random()*255] }
+            ] };
+    }
     const [compData, setCompData] = useState(placeholderCompData);
 
     const fetchCompData = async () => {
@@ -36,9 +47,11 @@ const App = () => {
     };
 
     const updateView = () => {
-        fetchCompData()
-            .then((data) => setCompData(data))
-            .catch((error) => console.error("Error fetching comp data:", error));
+        if (!__IS_DEV__) {
+            fetchCompData()
+                .then((data) => setCompData(data))
+                .catch((error) => console.error("Error fetching comp data:", error));
+        }
     };
 
     window.addEventListener("focus", updateView);
