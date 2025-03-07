@@ -1,6 +1,11 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
+import Layer from "./Layer";
 
 export default function Timeline({ compData, bpm, beatsPerBar, zoomLevel }) {
+
+    /*
+    * SETUP
+    */
     const timeSignature = 4;
     const beatsPerSecond = bpm / 60 * (beatsPerBar / 4);
     const beatsPerSignature = bpm / 60 * (timeSignature / 4);
@@ -28,31 +33,61 @@ export default function Timeline({ compData, bpm, beatsPerBar, zoomLevel }) {
 
     const beatWidth = timelineWidth / totalBeats;
 
+    /*
+    * CREATE LAYER OBJECTS
+    */
+     const layers = useMemo(() => {
+        return compData.layers.map((layer) => 
+            new Layer(layer, compData, totalBeats, beatWidth, timelineWidth)
+        );
+    }, [compData, totalBeats, beatWidth, timelineWidth]);
+
+    /*
+    * INTERACTION
+    */
+
+    const [ghostLayer, setGhostLayer] = useState(null);
+
+    const handleMouseDown = (layer, mode = "both") => {
+        setGhostLayer(layer);
+    }
+
+    const handleMouseUp = () => {
+        setGhostLayer(null);
+    };
+
     return (
         <div id="timeline">
             <div className="grid-layers" ref={timelineRef} style={{ gridTemplate: `auto / repeat(${roundedBeats}, 1fr)`, width: `${100 * zoomLevel}%` }}>
-                {compData.layers.map((layer, index) => {
-                    const gridStart = Math.floor(layer.inPoint / compData.duration * totalBeats) + 1;
-                    const gridEnd = Math.ceil(layer.outPoint / compData.duration * totalBeats) + 1;
-                    const gridDuration = gridEnd - gridStart;
-                    const layerScaling = layer.duration / (gridDuration * (compData.duration / totalBeats));
-                    const baseGridX = (gridStart - 1) * beatWidth;
-                    const trueX = (layer.inPoint / compData.duration) * timelineWidth;
-                    const translateX = trueX - baseGridX;
-
-                    return (
-                        <div key={index} className="timeline-layer" style={{
-                            gridColumnStart: gridStart,
-                            gridColumnEnd: gridEnd,
-                            gridRow: index + 1,
+            {layers.map((layer, index) => (
+                    <div 
+                        key={index} 
+                        className="timeline-layer" 
+                        style={{
+                            gridColumnStart: layer.gridStart,
+                            gridColumnEnd: layer.gridEnd,
+                            gridRow: layer.index,
                             backgroundColor: `rgb(${layer.color[0]}, ${layer.color[1]}, ${layer.color[2]})`,
-                            transform: `scaleX(${layerScaling}) translateX(${translateX}px)`,
+                            transform: `scaleX(${layer.scaling}) translateX(${layer.translateX}px)`,
                             transformOrigin: "left"
-                        }}>
-                            <span style={{ display: "inline-block", transform: "scaleX(1)" }}>{layer.name}</span>
-                        </div>
-                    );
-                })}
+                        }}
+                        onMouseDown={() => handleMouseDown(layer)}
+                        onMouseUp={() => handleMouseUp()}
+                    >
+                        <span style={{ display: "inline-block", transform: "scaleX(1)" }}>{layer.name}</span>
+                    </div>
+                ))}
+                {
+                    ghostLayer &&
+                    
+                            <div className="timeline-layer ghost" style={{
+                                gridColumnStart: ghostLayer.gridStart,
+                                gridColumnEnd: ghostLayer.gridEnd,
+                                gridRow: ghostLayer.index,
+                                outline: `3px solid rgb(${ghostLayer.color[0]}, ${ghostLayer.color[1]}, ${ghostLayer.color[2]})`,
+                            }}>
+                            </div>
+                }
             </div>
             <div className="grid-timeline" style={{ gridTemplate: `100% / repeat(${totalBars}, 1fr)`, width: `${100 * zoomLevel}%` }}>
                 {Array.from({ length: totalBars }).map((_, barIndex) => (

@@ -156,6 +156,7 @@ function getCompData() {
     for (var i = 1; i <= comp.numLayers; i++) {
         var layer = comp.layer(i);
         layers.push({
+            index: layer.index,
             name: layer.name,
             inPoint: layer.inPoint,
             outPoint: layer.outPoint,

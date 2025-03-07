@@ -17,11 +17,11 @@ const App = () => {
         console.log("Running in development mode!");
         placeholderCompData = { name: "Dummy Comp", duration: 48, frameRate: 30, width: 1080, height: 1080, 
             layers: [
-                { name: "Layoer 01", inPoint: 12, outPoint: 35, duration: 35-12, color: [Math.random()*255, Math.random()*255, Math.random()*255] },
-                { name: "Layoer 02", inPoint: 5, outPoint: 21, duration: 21-5, color: [Math.random()*255, Math.random()*255, Math.random()*255] },
-                { name: "Layoer 03", inPoint: 7.8, outPoint: 46, duration: 46-7.8, color: [Math.random()*255, Math.random()*255, Math.random()*255] },
-                { name: "Layoer 04", inPoint: 1, outPoint: 3, duration: 3-1, color: [Math.random()*255, Math.random()*255, Math.random()*255] },
-                { name: "Layoer 05", inPoint: 35, outPoint: 48, duration: 48-35, color: [Math.random()*255, Math.random()*255, Math.random()*255] }
+                { index: 1, name: "Layer 01", inPoint: 12, outPoint: 35, duration: 35-12, color: [Math.random()*255, Math.random()*255, Math.random()*255] },
+                { index: 2, name: "Layer 02", inPoint: 5, outPoint: 21, duration: 21-5, color: [Math.random()*255, Math.random()*255, Math.random()*255] },
+                { index: 3, name: "Layer 03", inPoint: 7.8, outPoint: 46, duration: 46-7.8, color: [Math.random()*255, Math.random()*255, Math.random()*255] },
+                { index: 4, name: "Layer 04", inPoint: 1, outPoint: 3, duration: 3-1, color: [Math.random()*255, Math.random()*255, Math.random()*255] },
+                { index: 5, name: "Layer 05", inPoint: 35, outPoint: 48, duration: 48-35, color: [Math.random()*255, Math.random()*255, Math.random()*255] }
             ] };
     }
     const [compData, setCompData] = useState(placeholderCompData);
