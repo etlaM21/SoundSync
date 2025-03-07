@@ -84,7 +84,7 @@ export default function Timeline({ compData, bpm, beatsPerBar, zoomLevel }) {
                                 gridColumnStart: ghostLayer.gridStart,
                                 gridColumnEnd: ghostLayer.gridEnd,
                                 gridRow: ghostLayer.index,
-                                outline: `3px solid rgb(${ghostLayer.color[0]}, ${ghostLayer.color[1]}, ${ghostLayer.color[2]})`,
+                                outlineColor: `rgb(${ghostLayer.color[0]}, ${ghostLayer.color[1]}, ${ghostLayer.color[2]})`,
                             }}>
                             </div>
                 }

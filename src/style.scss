@@ -149,6 +149,12 @@ main {
                 color: #ffffff;
                 mix-blend-mode: difference;
             }
+            &.ghost {
+                background-color: transparent;
+                outline-style: solid;
+                outline-width: 3px;
+                outline-offset: 2px;
+            }
         }
     }
 }
