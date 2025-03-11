@@ -176,3 +176,23 @@ function getCompData() {
     $.writeln(JSON.stringify(compData)); // Debugging output
     return JSON.stringify(compData);
 }
+
+function moveLayer(layerIndex, newIn) {
+    var comp = app.project.activeItem;
+    if (!comp || !(comp instanceof CompItem)) {
+        return "No active composition found";
+    }
+
+    var layer = comp.layer(layerIndex);
+    if (!layer) {
+        return "Layer not found";
+    }
+
+    app.beginUndoGroup("Move Layer some Beats");
+
+    layer.startTime = newIn;
+
+    app.endUndoGroup();
+
+    return "success";
+}
