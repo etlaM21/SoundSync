@@ -2,8 +2,13 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 import "./style.scss";
 import Toolbar from "./components/Toolbar";
 import Timeline from "./components/Timeline";
+import Loader from "./components/Loader";
 
 const App = () => {
+
+    const [loading, setLoading] = useState(false);
+    const [loadingText, setLoadingText] = useState("");
+
     const [bpm, setBpm] = useState(120.0);
     const [beatsPerBar, setBeatsPerBar] = useState(4);
     const [zoomLevel, setZoomLevel] = useState(1.0);
@@ -46,8 +51,10 @@ const App = () => {
 
     const updateView = () => {
         if (!__IS_DEV__) {
+            setLoadingText("Fetching Compposition Data");
+            setLoading(true);
             fetchCompData()
-                .then((data) => setCompData(data))
+                .then((data) => {setCompData(data); setLoading(false)})
                 .catch((error) => console.error("Error fetching comp data:", error));
         }
     };
@@ -56,13 +63,17 @@ const App = () => {
 
     return (
         <main>
+             {
+                    loading &&
+                        <Loader text={loadingText} />
+                }
             <Toolbar
                 bpm={bpm} setBpm={setBpm}
                 beatsPerBar={beatsPerBar} setBeatsPerBar={setBeatsPerBar}
                 zoomLevel={zoomLevel} increaseZoom={increaseZoom} decreaseZoom={decreaseZoom}
                 updateView={updateView}
             />
-            <Timeline compData={compData} bpm={bpm} beatsPerBar={beatsPerBar} zoomLevel={zoomLevel} updateView={updateView} />
+            <Timeline compData={compData} bpm={bpm} beatsPerBar={beatsPerBar} zoomLevel={zoomLevel} updateView={updateView} setLoading={setLoading} setLoadingText={setLoadingText}/>
             <div id="information">
                 <hr />
                 <p><small>comp duration: {compData.duration} seconds | total beats: {Math.floor(compData.duration * (bpm / 60 * (beatsPerBar / 4)))} | total bars: {Math.ceil((Math.floor(compData.duration * (bpm / 60 * (timeSignature / 4)))) / timeSignature)} | beats per second: { bpm / 60 * (beatsPerBar / 4)}</small></p>

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import Layer from "./Layer";
 
-export default function Timeline({ compData, bpm, beatsPerBar, zoomLevel, updateView }) {
+export default function Timeline({ compData, bpm, beatsPerBar, zoomLevel, updateView, setLoading, setLoadingText }) {
 
     /*
     * SETUP
@@ -143,8 +143,11 @@ export default function Timeline({ compData, bpm, beatsPerBar, zoomLevel, update
                         console.log("updatedLayer", updatedLayer)
                         updatedLayer.moveLayer(beatsToUpdate); // Apply movement
                         if(!__IS_DEV__) {
-                            moveAELayer(updatedLayer.index, updatedLayer.inPoint);
-                            updateView();
+                            setLoadingText(`Moving Layer by ${beatsToUpdate} Beats`);
+                            setLoading(true);
+                            moveAELayer(updatedLayer.index, updatedLayer.inPoint)
+                                .then(() => {updateView(); setLoading(false);})
+                                .catch((error) => console.error("Error fetching comp data:", error));
                         }
                         return updatedLayer;
                     }
