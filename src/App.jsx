@@ -61,6 +61,42 @@ const App = () => {
 
     window.addEventListener("focus", updateView);
 
+    const saveCompDataJSON = (filename) => {
+        const blob = new Blob([JSON.stringify(placeholderCompData, null, 2)], {
+            type: 'application/json',
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${filename}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        console.log(JSON.stringify(placeholderCompData));
+    }
+
+    const loadCompDataJSON = () => {
+        const readFile = function(e) {
+            var file = e.target.files[0];
+            if (!file) {
+                return;
+            }
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var contents = e.target.result;
+                fileInput.func(contents);
+                document.body.removeChild(fileInput);
+            }
+            reader.readAsText(file);
+        }
+        const fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.style.display = "none";
+        fileInput.onchange = readFile;
+        fileInput.func = (content) => setCompData(JSON.parse(content));
+        document.body.appendChild(fileInput);
+        fileInput.click();
+    }
+
     return (
         <main>
              {
@@ -72,6 +108,7 @@ const App = () => {
                 beatsPerBar={beatsPerBar} setBeatsPerBar={setBeatsPerBar}
                 zoomLevel={zoomLevel} increaseZoom={increaseZoom} decreaseZoom={decreaseZoom}
                 updateView={updateView}
+                saveCompDataJSON={saveCompDataJSON} loadCompDataJSON={loadCompDataJSON}
             />
             <Timeline compData={compData} bpm={bpm} beatsPerBar={beatsPerBar} zoomLevel={zoomLevel} updateView={updateView} setLoading={setLoading} setLoadingText={setLoadingText}/>
             <div id="information">
