@@ -13,9 +13,13 @@ export default class Layer {
         this.totalBeats = totalBeats;
 
         this.gridStart = Math.floor(this.inPoint / this.compDuration * this.totalBeats) + 1;
+        this.gridStart < 1 ? this.gridStart = 1 : this.gridStart;
         this.closestGridStart = Math.round(this.inPoint / this.compDuration * this.totalBeats) + 1;
+        this.closestGridStart < 1 ? this.closestGridStart = 1 : this.closestGridStart;
         this.gridEnd = Math.ceil(this.outPoint / this.compDuration * this.totalBeats) + 1;
+        this.gridEnd > this.totalBeats ? this.gridEnd = this.totalBeats : this.gridEnd;
         this.closestGridEnd = Math.round(this.outPoint / this.compDuration * this.totalBeats) + 1;
+        this.closestGridEnd > this.totalBeats ? this.closestGridEnd = this.totalBeats : this.closestGridEnd;
         this.gridDuration = this.gridEnd - this.gridStart;
         this.scaling = this.duration / (this.gridDuration * (this.compDuration / this.totalBeats));
 
