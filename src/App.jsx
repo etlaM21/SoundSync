@@ -62,7 +62,7 @@ const App = () => {
     window.addEventListener("focus", updateView);
 
     const saveCompDataJSON = (filename) => {
-        const blob = new Blob([JSON.stringify(placeholderCompData, null, 2)], {
+        const blob = new Blob([JSON.stringify(compData, null, 2)], {
             type: 'application/json',
         });
         const url = URL.createObjectURL(blob);
@@ -71,7 +71,7 @@ const App = () => {
         a.download = `${filename}.json`;
         a.click();
         URL.revokeObjectURL(url);
-        console.log(JSON.stringify(placeholderCompData));
+        console.log(JSON.stringify(compData));
     }
 
     const loadCompDataJSON = () => {
