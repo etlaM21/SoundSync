@@ -82,16 +82,19 @@ export default function Timeline({ compData, bpm, beatsPerBar, zoomLevel, update
                 ); */
                 movedBeats.current = -Math.round((startMouseX.current - mouseX.current) / beatWidth);
                 if (ghostLayerRef.current && movedBeats.current !== 0) {
-                    // ghostLayerRef.current.moveLayer(movedBeats);
-                     // Directly update the ghost layer's position in the DOM
-                    const ghostLayerElement = document.querySelector(".timeline-layer.ghost");
-                    if (ghostLayerElement) {
-                        const newPosition = movedBeats.current * beatWidth;  // Get the position to move
-                        console.log("movedBeats",movedBeats.current,"beatWidth",beatWidth,"newPosition",newPosition);
-                        ghostLayerElement.style.transform = `translateX(${newPosition}px)`;
-                    }
-                    // const updatedLayer = ghostLayerRef.current.moveLayer(movedBeats);
-                    // setGhostLayer(updatedLayer); // Update the ghost layer for UI
+                    const ghost = new Layer(
+                        {
+                            ...draggedLayer.current
+                        },
+                        draggedLayer.current.arrayIndex,
+                        compData,
+                        totalBeats,
+                        beatWidth,
+                        timelineWidth
+                    );
+                    ghost.moveLayer(movedBeats.current); // simulate movement
+                    ghostLayerRef.current = ghost;
+                    setGhostLayer(ghost);
                 }
             }
         };
@@ -212,13 +215,17 @@ export default function Timeline({ compData, bpm, beatsPerBar, zoomLevel, update
                 {
                     ghostLayer &&
                     
-                            <div className="timeline-layer ghost" style={{
-                                gridColumnStart: ghostLayer.gridStart,
-                                gridColumnEnd: ghostLayer.gridEnd,
-                                gridRow: ghostLayer.index,
-                                outlineColor: `rgb(${ghostLayer.color[0]}, ${ghostLayer.color[1]}, ${ghostLayer.color[2]})`,
-                            }}>
-                            </div>
+                            <div
+                                className="timeline-layer ghost"
+                                style={{
+                                    gridColumnStart: ghostLayer.closestGridStart,
+                                    gridColumnEnd: ghostLayer.closestGridEnd,
+                                    gridRow: ghostLayer.index,
+                                    outlineColor: `rgb(${ghostLayer.color[0]}, ${ghostLayer.color[1]}, ${ghostLayer.color[2]})`,
+                                    transform: `scaleX(${ghostLayer.scaling}) translateX(${ghostLayer.translateX}px)`,
+                                    transformOrigin: "left",
+                                }}
+                            ></div>
                 }
             </div>
             <div className="grid-timeline" style={{ gridTemplate: `100% / repeat(${totalBars}, minmax(0, 1fr))`, width: `${100 * zoomLevel}%` }}>
