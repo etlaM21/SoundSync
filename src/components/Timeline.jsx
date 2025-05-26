@@ -1,26 +1,51 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import Layer from "./Layer";
 
+/**
+ * Timeline component renders the timeline grid with layers and allows
+ * dragging layers horizontally to change their inPoints.
+ * 
+ * Props:
+ * - compData: Composition data with layers and duration
+ * - bpm: Beats per minute
+ * - beatsPerBar: Number of beats in each bar (time signature numerator)
+ * - zoomLevel: Horizontal zoom factor (percentage)
+ * - updateView: Callback to refresh composition data from AE
+ * - setLoading, setLoadingText: Controls loading UI state for async ops
+ */
 export default function Timeline({ compData, bpm, beatsPerBar, zoomLevel, updateView, setLoading, setLoadingText }) {
 
     /*
-    * SETUP
-    */
-    const timeSignature = 4;
-    // const beatsPerSecond = useRef(bpm / 60 * (beatsPerBar / 4));
+     * SETUP: Calculate timing metrics for timeline grid
+     */
+
+    const timeSignature = 4; // Fixed inner time signature (e.g. 4/4)
+    
+    // Calculate beats per second: bpm / 60 * (beatsPerBar / 4)
+    // Memoize so recalculation only occurs when bpm or beatsPerBar change
     const beatsPerSecond = useMemo(() => (bpm / 60) * (beatsPerBar / 4), [bpm, beatsPerBar]);
 
+    // Beats per second for the fixed time signature (used for bar calculations)
     const beatsPerSignature = bpm / 60 * (timeSignature / 4);
+
+    // Total number of beats in composition (floor to integer)
     const totalBeats = useMemo(() => Math.floor(compData.duration * beatsPerSecond), [bpm, compData.duration, beatsPerBar, beatsPerSecond]);
+
+    // Total beats in the fixed time signature scale (floor integer)
     const totalBeatsPerSignature = useMemo(() => Math.floor(compData.duration * beatsPerSignature), [bpm, compData]);
+
+    // Rounded up total beats to the next full bar
     const roundedBeats = useMemo(() => Math.ceil(totalBeats / beatsPerBar) * beatsPerBar, [totalBeats, beatsPerBar]);
+
+    // Total number of bars based on fixed time signature
     const totalBars = Math.ceil(totalBeatsPerSignature / timeSignature);
 
-    const timelineRef = useRef(null); // Reference for the timeline container
-    const [timelineWidth, setTimelineWidth] = useState(0); // Store actual width in pixels
-    const [beatWidth, setBeatWidth] = useState(0); // State for beatWidth
+    // Refs and state to manage dimensions
+    const timelineRef = useRef(null);
+    const [timelineWidth, setTimelineWidth] = useState(0);
+    const [beatWidth, setBeatWidth] = useState(0);
 
-    // Update timeline width and beatWidth on resize or when compData changes
+    // Update timeline width on mount, window resize, or compData/zoomLevel change
     useEffect(() => {
         const updateTimelineWidth = () => {
             if (timelineRef.current) {
@@ -28,40 +53,42 @@ export default function Timeline({ compData, bpm, beatsPerBar, zoomLevel, update
             }
         };
 
-        updateTimelineWidth(); // Initially set width
+        updateTimelineWidth(); // Initial width setup
         window.addEventListener('resize', updateTimelineWidth);
 
         return () => window.removeEventListener('resize', updateTimelineWidth);
-    }, [compData, zoomLevel]); // Recalculate on compData or zoomLevel changes
+    }, [compData, zoomLevel]);
 
-    // Recalculate beatWidth when timelineWidth or totalBeats is updated
+    // Calculate the width in pixels per beat after timelineWidth or totalBeats change
     useEffect(() => {
         if (timelineWidth > 0 && totalBeats > 0) {
             setBeatWidth(timelineWidth / totalBeats);
         }
     }, [timelineWidth, totalBeats]);
 
-    
+
     /*
-    * CREATE LAYER OBJECTS
-    */
+     * CREATE LAYER OBJECTS
+     */
+    // Store Layer instances in state for rendering and interaction
     const [layers, setLayers] = useState([]);
 
+    // Create Layer instances whenever compData, totalBeats, beatWidth, or timelineWidth changes
     useEffect(() => {
         const newLayers = compData.layers.map((layer, index) => 
             new Layer(layer, index, compData, totalBeats, beatWidth, timelineWidth)
         );
         setLayers(newLayers);
-    }, [compData, totalBeats, beatWidth, timelineWidth])
+    }, [compData, totalBeats, beatWidth, timelineWidth]);
 
-    
+
     /*
-    * INTERACTION
-    */
-
-    const [ghostLayer, setGhostLayer] = useState(null);
+     * INTERACTION: Drag and drop to move layers horizontally (in beats)
+     */
+    const [ghostLayer, setGhostLayer] = useState(null);  // Visual drag preview
     const ghostLayerRef = useRef(null);
 
+    // Track mouse positions and drag state
     const startMouseX = useRef(0);
     const mouseX = useRef(0);
 
@@ -70,18 +97,14 @@ export default function Timeline({ compData, bpm, beatsPerBar, zoomLevel, update
 
     const movedBeats = useRef(0);
 
+    // Mouse move handler to update ghost layer during drag
     useEffect(() => {
         const handleMouseMove = (ev) => {
             if (isDragging.current && beatWidth > 0) {
                 mouseX.current = ev.pageX;
-                /* console.log(
-                    "Current Mouse x = ", startMouseX.current - mouseX.current,
-                    "px different from start, that equals ", 
-                    Math.abs(startMouseX.current - mouseX.current) / beatWidth,
-                    "beats."
-                ); */
                 movedBeats.current = -Math.round((startMouseX.current - mouseX.current) / beatWidth);
                 if (ghostLayerRef.current && movedBeats.current !== 0) {
+                    // Create a new ghost layer instance simulating movement
                     const ghost = new Layer(
                         {
                             ...draggedLayer.current
@@ -101,66 +124,60 @@ export default function Timeline({ compData, bpm, beatsPerBar, zoomLevel, update
 
         window.addEventListener("mousemove", handleMouseMove);
         return () => window.removeEventListener("mousemove", handleMouseMove);
-    }, [beatWidth]); // Ensure this hook listens for beatWidth changes
+    }, [beatWidth]);
 
-
+    // Start dragging a layer on mouse down
     const layerMouseDown = (layer) => {
-        console.log("totalBeats", totalBeats, "beatWidth", beatWidth)
         startMouseX.current = mouseX.current;
         isDragging.current = true;
         movedBeats.current = 0;
+        // Find the corresponding Layer instance
         draggedLayer.current = layers.find(l => l.index === layer.index);
+        // Create ghost layer to follow mouse
         const newGhostLayer = new Layer(
             {
                 ...draggedLayer.current
             },
             draggedLayer.current.arrayIndex, compData, totalBeats, beatWidth, timelineWidth
-        )
+        );
         ghostLayerRef.current = newGhostLayer;
-        console.log("ghostLayerRef.current", ghostLayerRef.current, "draggedLayer.current", draggedLayer.current)
-        setGhostLayer(newGhostLayer);  // Trigger UI update
+        setGhostLayer(newGhostLayer);  // Trigger re-render for ghost layer
     };
     
-    // Handle Mouse Up
+    // On mouse up, apply the movement if any
     const layerMouseUp = () => {
-        if (isDragging.current && movedBeats.current != 0) {
+        if (isDragging.current && movedBeats.current !== 0) {
             isDragging.current = false;
             ghostLayerRef.current = null;
             setGhostLayer(null);
             const beatsToUpdate = movedBeats.current;
             movedBeats.current = 0;
-             // Create a new instance instead of modifying the existing one
-             setLayers((prevLayers) => {
+
+            // Update the layers state by moving the dragged layer
+            setLayers((prevLayers) => {
                 return prevLayers.map((layer) => {
                     if (layer === draggedLayer.current) {
-                        // Create a new Layer instance and apply the movement
-                         /* const updatedLayer = new Layer(
-                            { ...layer }, // Clone original layer data
-                            layer.arrayIndex, 
-                            compData, 
-                            totalBeats, 
-                            beatWidth, 
-                            timelineWidth
-                        ); */
+                        // Move the layer's inPoint by beatsToUpdate
                         const updatedLayer = layer;
-                        console.log("updatedLayer", updatedLayer)
-                        updatedLayer.moveLayer(beatsToUpdate); // Apply movement
+                        updatedLayer.moveLayer(beatsToUpdate);
+
+                        // Sync with After Effects if not in dev mode
                         if(!__IS_DEV__) {
                             setLoadingText(`Moving Layer by ${beatsToUpdate} Beats`);
                             setLoading(true);
                             moveAELayer(updatedLayer.index, updatedLayer.inPoint)
-                                .then(() => {updateView(); setLoading(false);})
-                                .catch((error) => console.error("Error fetching comp data:", error));
+                                .then(() => { updateView(); setLoading(false); })
+                                .catch((error) => console.error("Error moving AE layer:", error));
                         }
                         return updatedLayer;
                     }
                     return layer;
                 });
             });
-            // draggedLayer.current = null; // Clear reference after updating
         }
     };
 
+    // Calls After Effects script to move a layer by new inPoint
     const moveAELayer = async (layerIndex, newIn) => {
         return new Promise((resolve, reject) => {
             if (!window.CSInterface) {
@@ -179,10 +196,10 @@ export default function Timeline({ compData, bpm, beatsPerBar, zoomLevel, update
         });
     };
 
-    // Attach onMouseUp globally to capture any mouse release outside the timeline
+    // Global mouseup listener to catch mouse release outside timeline bounds
     useEffect(() => {
         const handleMouseUp = () => {
-            layerMouseUp(); 
+            layerMouseUp();
         };
 
         document.addEventListener("mouseup", handleMouseUp);
@@ -191,10 +208,21 @@ export default function Timeline({ compData, bpm, beatsPerBar, zoomLevel, update
     }, []);
 
 
+    /*
+     * RENDER
+     */
     return (
         <div id="timeline" onMouseMove={(ev) => mouseX.current = ev.pageX}>
-            <div className="grid-layers" ref={timelineRef} style={{ gridTemplate: `auto / repeat(${roundedBeats}, minmax(0, 1fr))`, width: `${100 * zoomLevel}%` }}>
-            {layers.map((layer, index) => (
+            {/* Layer grid: Each layer is positioned and sized based on its timing */}
+            <div
+                className="grid-layers"
+                ref={timelineRef}
+                style={{
+                    gridTemplate: `auto / repeat(${roundedBeats}, minmax(0, 1fr))`,
+                    width: `${100 * zoomLevel}%`
+                }}
+            >
+                {layers.map((layer, index) => (
                     <div 
                         key={index} 
                         className="timeline-layer" 
@@ -209,28 +237,44 @@ export default function Timeline({ compData, bpm, beatsPerBar, zoomLevel, update
                         onMouseDown={() => layerMouseDown(layer)}
                         onMouseUp={() => layerMouseUp()}
                     >
-                        <span style={{ display: "inline-block", transform: "scaleX(1)" }}>{layer.name}</span>
+                        <span style={{ display: "inline-block", transform: "scaleX(1)" }}>
+                            {layer.name}
+                        </span>
                     </div>
                 ))}
-                {
-                    ghostLayer &&
-                    
-                            <div
-                                className="timeline-layer ghost"
-                                style={{
-                                    gridColumnStart: ghostLayer.closestGridStart,
-                                    gridColumnEnd: ghostLayer.closestGridEnd,
-                                    gridRow: ghostLayer.index,
-                                    outlineColor: `rgb(${ghostLayer.color[0]}, ${ghostLayer.color[1]}, ${ghostLayer.color[2]})`,
-                                    transform: `scaleX(${ghostLayer.scaling}) translateX(${ghostLayer.translateX}px)`,
-                                    transformOrigin: "left",
-                                }}
-                            ></div>
-                }
+
+                {/* Render ghost layer during drag */}
+                {ghostLayer && (
+                    <div
+                        className="timeline-layer ghost"
+                        style={{
+                            gridColumnStart: ghostLayer.closestGridStart,
+                            gridColumnEnd: ghostLayer.closestGridEnd,
+                            gridRow: ghostLayer.index,
+                            outlineColor: `rgb(${ghostLayer.color[0]}, ${ghostLayer.color[1]}, ${ghostLayer.color[2]})`,
+                            transform: `scaleX(${ghostLayer.scaling}) translateX(${ghostLayer.translateX}px)`,
+                            transformOrigin: "left",
+                        }}
+                    />
+                )}
             </div>
-            <div className="grid-timeline" style={{ gridTemplate: `100% / repeat(${totalBars}, minmax(0, 1fr))`, width: `${100 * zoomLevel}%` }}>
+
+            {/* Timeline grid showing bars and beats */}
+            <div
+                className="grid-timeline"
+                style={{
+                    gridTemplate: `100% / repeat(${totalBars}, minmax(0, 1fr))`,
+                    width: `${100 * zoomLevel}%`
+                }}
+            >
+                {/* Bars */}
                 {Array.from({ length: totalBars }).map((_, barIndex) => (
-                    <div key={barIndex} className="grid-bar" style={{ gridTemplate: `100% / repeat(${beatsPerBar}, minmax(0, 1fr))` }}>
+                    <div
+                        key={barIndex}
+                        className="grid-bar"
+                        style={{ gridTemplate: `100% / repeat(${beatsPerBar}, minmax(0, 1fr))` }}
+                    >
+                        {/* Beats inside bar */}
                         {Array.from({ length: beatsPerBar }).map((_, beatIndex) => (
                             <div key={beatIndex} className="grid-beat" />
                         ))}
