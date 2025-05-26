@@ -4,6 +4,43 @@ SoundSync is a After Effects CEP extension helping you align effects and layers 
 
 It brings a BPM timeline to After Effects, enabling you to edit on beat.
 
+## Documentation
+
+### Main Functions
+
+#### Snap Layer (MODE)
+
+Affects whether shfiting or scaling a layer to beats snaps their inPoint to the closest beat at the cursor in the SoundSync timeline.
+
+> [!NOTE]  
+> Not yet implemented.
+
+#### Shift Layer by beat
+
+Shifts the selected layer by the beats moved in the SoundSync timeline.
+
+_SNAP MODE:_ Shifts the inPoint to the closest beat at the cursor, sets the outPoint accoringly to keep the original layer duration.
+
+#### Scale Layer by beat
+
+Scales the inPoint or onPoint of the selected layer by the beats moved in the SoundSync timeline.
+
+_SNAP MODE:_ Shifts the inPoint/outPoint to the closest beat at the cursor and keeps the opposite (inPoint or outPoint) at the current position. Thus changing the duration of the layer.
+
+> [!NOTE]  
+> Not yet implemented.
+
+### Additional Functions
+
+#### Duplicate Layer for the following x beats
+
+Duplicates the selected layer across the comp, spaced by beats based on given BPM for a set amount of copies.
+
+The first duplication starts 1 beat after the current layer's inPoint.
+
+> [!NOTE]  
+> Half of the script is implmented in the After Effects script (index.jsx), does not start at the current layer yet and does not end after n copies.
+
 ## Interface Architecture
 
 ### App.jsx
