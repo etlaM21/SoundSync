@@ -8,20 +8,20 @@ It brings a BPM timeline to After Effects, enabling you to edit on beat.
 
 ### Main Functions
 
-#### Snap Layer (MODE)
+#### `Snap Layer (MODE)`
 
 Affects whether shfiting or scaling a layer to beats snaps their inPoint to the closest beat at the cursor in the SoundSync timeline.
 
 > [!NOTE]  
 > Not yet implemented.
 
-#### Shift Layer by beat
+#### `Shift Layer by beat`
 
 Shifts the selected layer by the beats moved in the SoundSync timeline.
 
 _SNAP MODE:_ Shifts the inPoint to the closest beat at the cursor, sets the outPoint accoringly to keep the original layer duration.
 
-#### Scale Layer by beat
+#### `Scale Layer by beat`
 
 Scales the inPoint or onPoint of the selected layer by the beats moved in the SoundSync timeline.
 
@@ -32,7 +32,7 @@ _SNAP MODE:_ Shifts the inPoint/outPoint to the closest beat at the cursor and k
 
 ### Additional Functions
 
-#### Duplicate Layer for the following x beats
+#### `Duplicate Layer for the following x beats`
 
 Duplicates the selected layer across the comp, spaced by beats based on given BPM for a set amount of copies.
 
@@ -43,7 +43,7 @@ The first duplication starts 1 beat after the current layer's inPoint.
 
 ## Interface Architecture
 
-### App.jsx
+### `App.jsx`
 
 The `App.jsx` file is the main wrapper of the application. It:
 
@@ -61,7 +61,7 @@ The `App.jsx` file is the main wrapper of the application. It:
 
 > 💡 Development mode helps decouple the interface from After Effects during testing.
 
-### Toolbar.jsx
+### `Toolbar.jsx`
 
 `Toolbar.jsx` provides user controls for the timeline application:
 
@@ -73,7 +73,7 @@ The `App.jsx` file is the main wrapper of the application. It:
 
 The component receives all relevant state values and setters as props and triggers updates via event handlers. It uses SVG icons as React components for interactive controls.
 
-### Timeline.jsx
+### `Timeline.jsx`
 
 This component renders the interactive timeline grid with layers representing After Effects layers in the composition. 
 
@@ -90,7 +90,7 @@ This component renders the interactive timeline grid with layers representing Af
 
 This component manages the core timeline visualization and user interactions for adjusting layer timing.
 
-#### Layer.js
+#### `Layer.js`
 
 This class models a single After Effects layer on the timeline grid.
 
