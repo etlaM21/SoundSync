@@ -190,7 +190,7 @@ export default function Timeline({ compData, bpm, beatsPerBar, zoomLevel, update
 
     return (
         <div id="timeline" onMouseMove={(ev) => mouseX.current = ev.pageX}>
-            <div className="grid-layers" ref={timelineRef} style={{ gridTemplate: `auto / repeat(${roundedBeats}, 1fr)`, width: `${100 * zoomLevel}%` }}>
+            <div className="grid-layers" ref={timelineRef} style={{ gridTemplate: `auto / repeat(${roundedBeats}, minmax(0, 1fr))`, width: `${100 * zoomLevel}%` }}>
             {layers.map((layer, index) => (
                     <div 
                         key={index} 
@@ -221,9 +221,9 @@ export default function Timeline({ compData, bpm, beatsPerBar, zoomLevel, update
                             </div>
                 }
             </div>
-            <div className="grid-timeline" style={{ gridTemplate: `100% / repeat(${totalBars}, 1fr)`, width: `${100 * zoomLevel}%` }}>
+            <div className="grid-timeline" style={{ gridTemplate: `100% / repeat(${totalBars}, minmax(0, 1fr))`, width: `${100 * zoomLevel}%` }}>
                 {Array.from({ length: totalBars }).map((_, barIndex) => (
-                    <div key={barIndex} className="grid-bar" style={{ gridTemplate: `100% / repeat(${beatsPerBar}, 1fr)` }}>
+                    <div key={barIndex} className="grid-bar" style={{ gridTemplate: `100% / repeat(${beatsPerBar}, minmax(0, 1fr))` }}>
                         {Array.from({ length: beatsPerBar }).map((_, beatIndex) => (
                             <div key={beatIndex} className="grid-beat" />
                         ))}
