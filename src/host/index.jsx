@@ -115,9 +115,15 @@ function getLabelColour(theLayer) {
 *
 */
 
-
+/*
+* duplicateLayerOnBeat
+* Duplicates the selected layer across the comp, spaced by beats based on given BPM.
+* Each duplicate is placed at multiples of the beat interval.
+*/
 function duplicateLayerOnBeat(bpm) {
     var comp = app.project.activeItem;
+
+    // Ensure a composition is open and active
     if (!(comp && comp instanceof CompItem)) {
         alert("Please open a composition.");
         return;
@@ -133,10 +139,11 @@ function duplicateLayerOnBeat(bpm) {
 
     var frameRate = comp.frameRate;
     var beatsPerSecond = bpm / 60;
-    var beatInterval = frameRate / beatsPerSecond; // Frames per beat
+    var beatInterval = frameRate / beatsPerSecond; // Frames per beat (not used explicitly but could be for future frame calculations)
 
     var currentTime = layer.startTime;
-    
+
+    // Duplicate layer, placing each new one at increments of beat duration (seconds)
     for (var i = 1; currentTime < comp.duration; i++) {
         var newLayer = layer.duplicate();
         newLayer.startTime = i * (60 / bpm);
@@ -146,13 +153,22 @@ function duplicateLayerOnBeat(bpm) {
     app.endUndoGroup();
 }
 
+/*
+* getCompData
+* Returns JSON string with comp and layer info:
+* - comp name, duration, frame rate, size
+* - array of layers with index, name, inPoint, outPoint, duration, and label color RGB
+*/
 function getCompData() {
     var comp = app.project.activeItem;
+
+    // Validate active composition
     if (!comp || !(comp instanceof CompItem)) {
         return JSON.stringify({ error: "No active composition found." });
     }
 
     var layers = [];
+    // Loop through all layers to collect their data
     for (var i = 1; i <= comp.numLayers; i++) {
         var layer = comp.layer(i);
         layers.push({
@@ -165,6 +181,7 @@ function getCompData() {
         });
     }
 
+    // Compose comp data object
     var compData = {
         name: comp.name,
         duration: comp.duration,
@@ -173,12 +190,21 @@ function getCompData() {
         height: comp.height,
         layers: layers
     };
-    $.writeln(JSON.stringify(compData)); // Debugging output
+
+    $.writeln(JSON.stringify(compData)); // Debugging output to console
+
     return JSON.stringify(compData);
 }
 
+/*
+* moveLayer
+* Moves the start time of a given layer (by index) to a new time position.
+* Returns status string.
+*/
 function moveLayer(layerIndex, newIn) {
     var comp = app.project.activeItem;
+
+    // Validate active composition
     if (!comp || !(comp instanceof CompItem)) {
         return "No active composition found";
     }
@@ -190,6 +216,7 @@ function moveLayer(layerIndex, newIn) {
 
     app.beginUndoGroup("Move Layer some Beats");
 
+    // Update the layer's start time to the new position
     layer.startTime = newIn;
 
     app.endUndoGroup();

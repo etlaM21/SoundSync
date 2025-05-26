@@ -4,7 +4,7 @@ SoundSync is a After Effects CEP extension helping you align effects and layers 
 
 It brings a BPM timeline to After Effects, enabling you to edit on beat.
 
-## Documentation
+## Interface Architecture
 
 ### App.jsx
 
@@ -68,6 +68,32 @@ This class models a single After Effects layer on the timeline grid.
   - The grid positions (start/end beat indices)
 
 - Maintains synchronization between AE time-based data and the pixel/beat-based UI timeline representation.
+
+## After Effects Scripts
+
+### `duplicateLayerOnBeat(bpm)`
+
+- Duplicates the currently selected layer throughout the active composition.
+- Places duplicates spaced according to the beat interval calculated from the given BPM.
+- Automatically stops duplicating when the end of the composition is reached.
+- Uses an undo group for safe operation within After Effects.
+
+### `getCompData()`
+
+- Gathers detailed information about the active composition and its layers.
+- Returns a JSON string with the following info:
+  - Composition name, duration, frame rate, width, and height.
+  - An array of layers, each containing:
+    - Layer index and name.
+    - In and out points, and duration.
+    - Label color as an RGB triplet.
+- Useful for syncing external apps or UI with After Effects composition data.
+
+### `moveLayer(layerIndex, newIn)`
+
+- Moves a layer (by index) to a new start time (`newIn` seconds).
+- Wraps the action in an undo group.
+- Returns a status string to indicate success or failure.
 
 ## Attributions
 
