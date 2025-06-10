@@ -4,6 +4,9 @@ import React from "react";
 import IconZoomIn from "../assets/icons/zoom-in-icon.svg";
 import IconZoomOut from "../assets/icons/zoom-out-icon.svg";
 import IconReload from "../assets/icons/reload-icon.svg";
+import IconMagnet from "../assets/icons/magnetic-icon.svg";
+import IconMove from "../assets/icons/width-icon.svg";
+import IconScale from "../assets/icons/divider-split-vertical-icon.svg";
 
 // Functional component receives props controlling timeline and data IO
 export default function Toolbar({
@@ -15,6 +18,10 @@ export default function Toolbar({
   increaseZoom,
   decreaseZoom,
   updateView,
+  modeSnap,
+  setModeSnap,
+  mode,
+  setMode,
   saveCompDataJSON,
   loadCompDataJSON,
 }) {
@@ -57,7 +64,33 @@ export default function Toolbar({
           onClick={increaseZoom}
           style={{ marginLeft: "1.5px" }}
         />
-        <IconZoomOut onClick={decreaseZoom} />
+        <IconZoomOut 
+          onClick={decreaseZoom} 
+          style={{ marginLeft: "0" }}
+        />
+        <div style={{
+          display: "inline",
+          height: "100%",
+          borderLeft: "solid 3px var(--light-grey)",
+          marginLeft: "1.5px",
+          marginRight: "6px"
+        }} />
+        {/* Mode Controls controls */}
+        <IconMagnet
+          onClick={() => setModeSnap(!modeSnap)}
+          className={`${modeSnap ? "active" : ""}`}
+          style={{ marginLeft: "0" }}
+        />
+        <IconMove 
+          onClick={() => setMode("move")} 
+          className={`${mode === "move" ? "active" : ""}`}
+          style={{ marginLeft: "0" }}
+        />
+        <IconScale 
+          onClick={() => setMode("scale")} 
+          className={`${mode === "scale" ? "active" : ""}`}
+          style={{ marginLeft: "0" }}
+        />
       </menu>
 
       {/* Secondary menu with JSON save/load buttons */}

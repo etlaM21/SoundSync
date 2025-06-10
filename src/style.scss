@@ -45,6 +45,9 @@ svg {
     &:hover, &:focus {
         fill: var(--lightest);
     }
+    &.active {
+        fill: var(--highlight);
+    }
 }
 
 button, input, select, option {

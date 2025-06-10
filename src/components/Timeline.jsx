@@ -13,7 +13,17 @@ import Layer from "./Layer";
  * - updateView: Callback to refresh composition data from AE
  * - setLoading, setLoadingText: Controls loading UI state for async ops
  */
-export default function Timeline({ compData, bpm, beatsPerBar, zoomLevel, updateView, setLoading, setLoadingText }) {
+export default function Timeline({
+    compData,
+    bpm,
+    beatsPerBar,
+    zoomLevel,
+    updateView,
+    setLoading,
+    setLoadingText,
+    modeSnapRef,
+    modeRef
+    }) {
 
     /*
      * SETUP: Calculate timing metrics for timeline grid
@@ -115,7 +125,7 @@ export default function Timeline({ compData, bpm, beatsPerBar, zoomLevel, update
                         beatWidth,
                         timelineWidth
                     );
-                    ghost.moveLayer(movedBeats.current); // simulate movement
+                    ghost.moveLayer(movedBeats.current, modeSnapRef.current, beatWidth, timelineWidth); // simulate movement
                     ghostLayerRef.current = ghost;
                     setGhostLayer(ghost);
                 }
@@ -159,7 +169,7 @@ export default function Timeline({ compData, bpm, beatsPerBar, zoomLevel, update
                     if (layer === draggedLayer.current) {
                         // Move the layer's inPoint by beatsToUpdate
                         const updatedLayer = layer;
-                        updatedLayer.moveLayer(beatsToUpdate);
+                        updatedLayer.moveLayer(beatsToUpdate, modeSnapRef.current, beatWidth, timelineWidth);
 
                         // Sync with After Effects if not in dev mode
                         if(!__IS_DEV__) {

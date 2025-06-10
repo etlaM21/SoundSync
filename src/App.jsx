@@ -16,6 +16,22 @@ const App = () => {
     const [zoomLevel, setZoomLevel] = useState(1.0); // Controls horizontal zoom of timeline
     const timeSignature = 4; // Used only for display calculation (not editable yet)
 
+    // Mode Settings
+    /* GENERAL MODE WHEN COMMUNICATING WITH AE TO PREVENT CRASHES */
+    const [waitingForAE, setWaitingForAE] = useState(false);
+    /* Different modes when using the TL */
+    const [modeSnap, setModeSnap] = useState(true);
+    const modeSnapRef = useRef(modeSnap);
+    useEffect(() => {
+        modeSnapRef.current = modeSnap;
+    }, [modeSnap]);
+    const [mode, setMode] = useState("move");
+    const modeRef = useRef(mode);
+    useEffect(() => {
+        modeRef.current = mode;
+    }, [mode]);
+
+
     // Zoom controls
     const increaseZoom = () => setZoomLevel(zoomLevel + 0.25);
     const decreaseZoom = () => zoomLevel - 0.25 >= 1.0 ? setZoomLevel(zoomLevel - 0.25) : null;
@@ -137,6 +153,10 @@ const App = () => {
                 increaseZoom={increaseZoom}
                 decreaseZoom={decreaseZoom}
                 updateView={updateView}
+                modeSnap={modeSnap}
+                setModeSnap={setModeSnap}
+                mode={mode}
+                setMode={setMode}
                 saveCompDataJSON={saveCompDataJSON}
                 loadCompDataJSON={loadCompDataJSON}
             />
@@ -149,6 +169,8 @@ const App = () => {
                 updateView={updateView}
                 setLoading={setLoading}
                 setLoadingText={setLoadingText}
+                modeSnapRef={modeSnapRef}
+                modeRef={modeRef}
             />
 
             <div id="information">
