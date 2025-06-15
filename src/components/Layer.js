@@ -82,7 +82,7 @@ export default class Layer {
     }
   
     /**
-     * Moves the layer horizontally on the timeline by a number of beats.
+     * Moves the layer on the timeline by a number of beats.
      * Updates all related timing and grid properties.
      *
      * @param {number} beats - Number of beats to move (can be negative)
@@ -92,7 +92,7 @@ export default class Layer {
      * @param {number} timelineWidth - Total width of the timeline in pixels
      */
     moveLayer(beats, snapping, beatWidth, timelineWidth) {
-      console.log("moving", beats, "beats. current in:", this.inPoint, "current gridStart:", this.gridStart, "SNAPPING?", snapping);
+      // console.log("moving", beats, "beats. current in:", this.inPoint, "current gridStart:", this.gridStart, "SNAPPING?", snapping);
   
       // Get current beat duration to keep layer duration when finished moving
       let gridDuration = this.gridEnd - this.gridStart;
@@ -130,6 +130,60 @@ export default class Layer {
       this.rescaleLayer(beatWidth, timelineWidth);
   
       console.log("moved new in:", this.inPoint, "new gridStart:", this.gridStart);
+    }  
+  
+    /**
+     * Moves the in or outpoint of the layer on the timeline by a number of beats.
+     * Updates all related timing and grid properties.
+     *
+     * @param {number} startPoint - Either in or outPoint which will be moved
+     * @param {number} beats - Number of beats to move in or outpoint (can be negative)
+     * @param {bool} snapping - Whether or not to snap to the grid
+     * These are just to rescale Layer properly after moving
+     * @param {number} beatWidth - Width in pixels per beat (to position in UI)
+     * @param {number} timelineWidth - Total width of the timeline in pixels
+     */
+    scaleLayer(startPoint, beats, snapping, beatWidth, timelineWidth) {
+      // console.log("moving", beats, "beats. current in:", this.inPoint, "current gridStart:", this.gridStart, "SNAPPING?", snapping);
+  
+      // Update grid positions by adding beats
+      if(startPoint === "in") {
+        this.gridStart += beats;
+        this.closestGridStart += beats;
+        if (this.closestGridStart < 1) this.closestGridStart = 1;
+
+        if (this.gridStart < 1 || snapping) {
+          this.gridStart = 1;
+          
+          this.gridStart = this.closestGridStart;
+        }
+      }
+      if(startPoint === "out") {
+        this.gridEnd += beats;
+        this.closestGridEnd += beats;
+        if (this.closestGridEnd > this.totalBeats) this.closestGridEnd = 1;
+
+        if (this.gridEnd > this.totalBeats || snapping) {
+          this.gridEnd = 1;
+          
+          this.gridEnd = this.closestGridEnd;
+        }
+      }
+  
+  
+
+      // Recalculate timing in seconds based on new grid positions
+      this.inPoint = ((this.gridStart - 1) * this.compDuration) / this.totalBeats;
+      this.outPoint = ((this.gridEnd - 1) * this.compDuration) / this.totalBeats;
+      
+      // Handle if layer moved beyond the timeline
+      if (this.inPoint < 0) this.inPoint = 0;
+      if (this.outPoint > this.compDuration) this.outPoint = this.compDuration;
+      // Update duration
+      this.duration = this.outPoint - this.inPoint;
+      this.rescaleLayer(beatWidth, timelineWidth);
+  
+      console.log("moved", startPoint, "by", beats, "beats");
     }
   }
   

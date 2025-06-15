@@ -179,6 +179,7 @@ main {
         height: 0;
         overflow-x: clip;
         .timeline-layer {
+            position: relative;
             background-color: darkorchid;
             border-radius: 3px;
             padding: 3px;
@@ -196,9 +197,22 @@ main {
             -moz-user-select: none !important;
             -ms-user-select: none !important;
             user-select: none !important;
+            .timeline-layer-button {
+                position: absolute;
+                top: 0;
+                width: 50%;
+                height: 100%;
+                &.left {
+                    left: 0;
+                }
+                &.right {
+                    right: 0;
+                }
+            }
             span {
                 color: #ffffff;
                 mix-blend-mode: difference;
+                pointer-events: none;
             }
             &.ghost {
                 background-color: transparent;

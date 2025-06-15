@@ -135,7 +135,7 @@ function duplicateLayerOnBeat(bpm) {
         return;
     }
 
-    app.beginUndoGroup("Duplicate Layer on BPM");
+    app.beginUndoGroup("Duplicate Layer on BPM (SoundSync)");
 
     var frameRate = comp.frameRate;
     var beatsPerSecond = bpm / 60;
@@ -164,7 +164,7 @@ function getCompData() {
 
     // Validate active composition
     if (!comp || !(comp instanceof CompItem)) {
-        return JSON.stringify({ error: "No active composition found." });
+        return JSON.stringify({ error: "No active composition found. (SoundSync)" });
     }
 
     var layers = [];
@@ -214,10 +214,39 @@ function moveLayer(layerIndex, newIn) {
         return "Layer not found";
     }
 
-    app.beginUndoGroup("Move Layer some Beats");
+    app.beginUndoGroup("Move Layer some Beats (SoundSync)");
 
     // Update the layer's start time to the new position
     layer.startTime = newIn;
+
+    app.endUndoGroup();
+
+    return "success";
+}
+
+/*
+* scaleLayer
+* Moves the in or outpoint of a given layer (by index) to a new time position.
+* Returns status string.
+*/
+function moveLayer(layerIndex, newIn, newOut) {
+    var comp = app.project.activeItem;
+
+    // Validate active composition
+    if (!comp || !(comp instanceof CompItem)) {
+        return "No active composition found";
+    }
+
+    var layer = comp.layer(layerIndex);
+    if (!layer) {
+        return "Layer not found";
+    }
+
+    app.beginUndoGroup("Scale Layer some Beats (SoundSync)");
+
+    // Update the layer's start time to the new position
+    layer.startTime = newIn;
+    layer.outPoint = newOut;
 
     app.endUndoGroup();
 

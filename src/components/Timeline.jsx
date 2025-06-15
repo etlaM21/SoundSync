@@ -104,6 +104,7 @@ export default function Timeline({
 
     const isDragging = useRef(false);
     const draggedLayer = useRef(null);
+    const draggeDirection = useRef("");
 
     const movedBeats = useRef(0);
 
@@ -125,7 +126,8 @@ export default function Timeline({
                         beatWidth,
                         timelineWidth
                     );
-                    ghost.moveLayer(movedBeats.current, modeSnapRef.current, beatWidth, timelineWidth); // simulate movement
+                    if(modeRef.current === "move") ghost.moveLayer(movedBeats.current, modeSnapRef.current, beatWidth, timelineWidth); // simulate movement
+                    else if(modeRef.current === "scale") ghost.scaleLayer(draggeDirection.current, movedBeats.current, modeSnapRef.current, beatWidth, timelineWidth); // simulate scaling                    
                     ghostLayerRef.current = ghost;
                     setGhostLayer(ghost);
                 }
@@ -137,7 +139,9 @@ export default function Timeline({
     }, [beatWidth]);
 
     // Start dragging a layer on mouse down
-    const layerMouseDown = (layer) => {
+    const layerMouseDown = (layer, direction) => {
+        draggeDirection.current = direction;
+        console.log("direction", draggeDirection.current);
         startMouseX.current = mouseX.current;
         isDragging.current = true;
         movedBeats.current = 0;
@@ -162,11 +166,13 @@ export default function Timeline({
             setGhostLayer(null);
             const beatsToUpdate = movedBeats.current;
             movedBeats.current = 0;
+            const dragDirection = draggeDirection.current;
+            draggeDirection.current = "";
 
             // Update the layers state by moving the dragged layer
             setLayers((prevLayers) => {
                 return prevLayers.map((layer) => {
-                    if (layer === draggedLayer.current) {
+                    if (layer === draggedLayer.current && modeRef.current === "move") {
                         // Move the layer's inPoint by beatsToUpdate
                         const updatedLayer = layer;
                         updatedLayer.moveLayer(beatsToUpdate, modeSnapRef.current, beatWidth, timelineWidth);
@@ -176,6 +182,21 @@ export default function Timeline({
                             setLoadingText(`Moving Layer by ${beatsToUpdate} Beats`);
                             setLoading(true);
                             moveAELayer(updatedLayer.index, updatedLayer.inPoint)
+                                .then(() => { updateView(); setLoading(false); })
+                                .catch((error) => console.error("Error moving AE layer:", error));
+                        }
+                        return updatedLayer;
+                    }
+                    if (layer === draggedLayer.current && modeRef.current === "scale") {
+                        // Move the layer's inPoint by beatsToUpdate
+                        const updatedLayer = layer;
+                        updatedLayer.scaleLayer(dragDirection, beatsToUpdate, modeSnapRef.current, beatWidth, timelineWidth);
+
+                        // Sync with After Effects if not in dev mode
+                        if(!__IS_DEV__) {
+                            setLoadingText(`Scaling Layer by ${beatsToUpdate} Beats`);
+                            setLoading(true);
+                            scaleAELayer(updatedLayer.index, updatedLayer.inPoint, updatedLayer.outPoint)
                                 .then(() => { updateView(); setLoading(false); })
                                 .catch((error) => console.error("Error moving AE layer:", error));
                         }
@@ -244,9 +265,15 @@ export default function Timeline({
                             transform: `scaleX(${layer.scaling}) translateX(${layer.translateX}px)`,
                             transformOrigin: "left"
                         }}
-                        onMouseDown={() => layerMouseDown(layer)}
-                        onMouseUp={() => layerMouseUp()}
                     >
+                        <div className="timeline-layer-button left"
+                        onMouseDown={() => layerMouseDown(layer, "in")}
+                        onMouseUp={() => layerMouseUp()}
+                        >&nbsp;</div>
+                        <div className="timeline-layer-button right"
+                        onMouseDown={() => layerMouseDown(layer, "out")}
+                        onMouseUp={() => layerMouseUp()}
+                        >&nbsp;</div>
                         <span style={{ display: "inline-block", transform: "scaleX(1)" }}>
                             {layer.name}
                         </span>

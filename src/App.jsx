@@ -25,7 +25,7 @@ const App = () => {
     useEffect(() => {
         modeSnapRef.current = modeSnap;
     }, [modeSnap]);
-    const [mode, setMode] = useState("move");
+    const [mode, setMode] = useState("move"); // Either "move" or "scale"
     const modeRef = useRef(mode);
     useEffect(() => {
         modeRef.current = mode;
