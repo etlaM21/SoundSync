@@ -13,7 +13,7 @@ It brings a BPM timeline to After Effects, enabling you to edit on beat.
 Affects whether shfiting or scaling a layer to beats snaps their inPoint to the closest beat at the cursor in the SoundSync timeline.
 
 > [!NOTE]  
-> Not yet implemented.
+> Not yet tested.
 
 #### `Shift Layer by beat`
 
@@ -28,7 +28,7 @@ Scales the inPoint or onPoint of the selected layer by the beats moved in the So
 _SNAP MODE:_ Shifts the inPoint/outPoint to the closest beat at the cursor and keeps the opposite (inPoint or outPoint) at the current position. Thus changing the duration of the layer.
 
 > [!NOTE]  
-> Not yet implemented.
+> Not yet tested.
 
 ### Additional Functions
 
@@ -131,6 +131,24 @@ This class models a single After Effects layer on the timeline grid.
 - Moves a layer (by index) to a new start time (`newIn` seconds).
 - Wraps the action in an undo group.
 - Returns a status string to indicate success or failure.
+
+### `scaleLayer(layerIndex, newIn, newOut)`
+
+- Moves either the in or ourPoint of a layer to new time.
+- Wraps the action in an undo group.
+- Returns a status string to indicate success or failure.
+
+## Outlook
+
+### Timeline Functions
+
+- Multi-Select
+- Automatic Keyframes / Expressions on beat
+- Mark parts of song: _"Intro", "Drop", "Part 1", etc._
+
+### SoundSync Functions
+
+- Template im- and export to save and automatically place shape / layer arrangements
 
 ## Attributions
 
