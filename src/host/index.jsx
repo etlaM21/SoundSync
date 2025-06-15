@@ -229,7 +229,7 @@ function moveLayer(layerIndex, newIn) {
 * Moves the in or outpoint of a given layer (by index) to a new time position.
 * Returns status string.
 */
-function moveLayer(layerIndex, newIn, newOut) {
+function scaleLayer(layerIndex, newIn, newOut) {
     var comp = app.project.activeItem;
 
     // Validate active composition
