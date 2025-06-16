@@ -142,6 +142,8 @@ This class models a single After Effects layer on the timeline grid.
 
 ### Timeline Functions
 
+- Filter only visible layers of composition (maybe other ways too?)
+- Show Waveform in the background of timelime
 - Multi-Select
 - Automatic Keyframes / Expressions on beat
 - Mark parts of song: _"Intro", "Drop", "Part 1", etc._
