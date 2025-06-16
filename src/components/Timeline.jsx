@@ -227,6 +227,25 @@ export default function Timeline({
         });
     };
 
+    // Calls After Effects script to scale a layer by new inPoint
+    const scaleAELayer = async (layerIndex, newIn, newOut) => {
+        return new Promise((resolve, reject) => {
+            if (!window.CSInterface) {
+                reject("CSInterface is not available. Make sure CSInterface.js is loaded.");
+                return;
+            }
+    
+            const csInterface = new window.CSInterface();
+            csInterface.evalScript(`scaleLayer(${layerIndex}, ${newIn}, ${newOut})`, (result) => {
+                if (result === "success") {
+                    resolve();
+                } else {
+                    reject(result);
+                }
+            });
+        });
+    };
+
     // Global mouseup listener to catch mouse release outside timeline bounds
     useEffect(() => {
         const handleMouseUp = () => {
