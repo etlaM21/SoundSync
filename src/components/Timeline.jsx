@@ -19,6 +19,7 @@ export default function Timeline({
     beatsPerBar,
     zoomLevel,
     updateView,
+    waitingForAERef,
     setLoading,
     setLoadingText,
     modeSnapRef,
@@ -178,11 +179,12 @@ export default function Timeline({
                         updatedLayer.moveLayer(beatsToUpdate, modeSnapRef.current, beatWidth, timelineWidth);
 
                         // Sync with After Effects if not in dev mode
-                        if(!__IS_DEV__) {
+                        if(!__IS_DEV__ && !waitingForAERef.current) {
+                            waitingForAERef.current = true;
                             setLoadingText(`Moving Layer by ${beatsToUpdate} Beats`);
                             setLoading(true);
                             moveAELayer(updatedLayer.index, updatedLayer.inPoint)
-                                .then(() => { updateView(); setLoading(false); })
+                                .then(() => { updateView(); waitingForAERef.current = false; setLoading(false); })
                                 .catch((error) => console.error("Error moving AE layer:", error));
                         }
                         return updatedLayer;
@@ -193,11 +195,12 @@ export default function Timeline({
                         updatedLayer.scaleLayer(dragDirection, beatsToUpdate, modeSnapRef.current, beatWidth, timelineWidth);
 
                         // Sync with After Effects if not in dev mode
-                        if(!__IS_DEV__) {
+                        if(!__IS_DEV__ && !waitingForAERef.current) {
+                            waitingForAERef.current = true;
                             setLoadingText(`Scaling Layer by ${beatsToUpdate} Beats`);
                             setLoading(true);
                             scaleAELayer(updatedLayer.index, updatedLayer.inPoint, updatedLayer.outPoint)
-                                .then(() => { updateView(); setLoading(false); })
+                                .then(() => { updateView(); waitingForAERef.current = false; setLoading(false); })
                                 .catch((error) => console.error("Error moving AE layer:", error));
                         }
                         return updatedLayer;

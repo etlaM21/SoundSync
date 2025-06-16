@@ -19,6 +19,7 @@ const App = () => {
     // Mode Settings
     /* GENERAL MODE WHEN COMMUNICATING WITH AE TO PREVENT CRASHES */
     const [waitingForAE, setWaitingForAE] = useState(false);
+    const waitingForAERef = useRef(waitingForAE);
     /* Different modes when using the TL */
     const [modeSnap, setModeSnap] = useState(true);
     const modeSnapRef = useRef(modeSnap);
@@ -90,12 +91,14 @@ const App = () => {
 
     // Triggers fetch when user switches to the app
     const updateView = () => {
-        if (!__IS_DEV__) {
+        if (!__IS_DEV__ && !waitingForAERef.current) {
+            waitingForAERef.current = true;
             setLoadingText("Fetching Composition Data");
             setLoading(true);
             fetchCompData()
                 .then((data) => {
                     setCompData(data);
+                    waitingForAERef.current = false;
                     setLoading(false);
                 })
                 .catch((error) => console.error("Error fetching comp data:", error));
@@ -167,6 +170,7 @@ const App = () => {
                 beatsPerBar={beatsPerBar}
                 zoomLevel={zoomLevel}
                 updateView={updateView}
+                waitingForAERef = {waitingForAERef}
                 setLoading={setLoading}
                 setLoadingText={setLoadingText}
                 modeSnapRef={modeSnapRef}
