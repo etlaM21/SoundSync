@@ -213,6 +213,7 @@ main {
                 color: #ffffff;
                 mix-blend-mode: difference;
                 pointer-events: none;
+                transform-origin: left;
             }
             &.ghost {
                 background-color: transparent;

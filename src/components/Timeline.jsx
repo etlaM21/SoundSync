@@ -296,7 +296,7 @@ export default function Timeline({
                         onMouseDown={() => layerMouseDown(layer, "out")}
                         onMouseUp={() => layerMouseUp()}
                         >&nbsp;</div>
-                        <span style={{ display: "inline-block", transform: "scaleX(1)" }}>
+                        <span style={{ display: "inline-block", transform: `scaleX(${1 / layer.scaling})` }}>
                             {layer.name}
                         </span>
                     </div>
