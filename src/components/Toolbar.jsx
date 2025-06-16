@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 
 // SVG icons imported as React components
+import IconReload from "../assets/icons/reload-icon.svg";
+import IconFilter from "../assets/icons/filter-filtering-icon.svg";
 import IconZoomIn from "../assets/icons/zoom-in-icon.svg";
 import IconZoomOut from "../assets/icons/zoom-out-icon.svg";
-import IconReload from "../assets/icons/reload-icon.svg";
 import IconMagnet from "../assets/icons/magnetic-icon.svg";
 import IconMove from "../assets/icons/move-icon.svg";
 import IconScale from "../assets/icons/scale-icon.svg";
@@ -17,6 +18,10 @@ export default function Toolbar({
   zoomLevel,
   increaseZoom,
   decreaseZoom,
+  showInactive,
+  setShowInactive,
+  showHidden,
+  setShowHidden,
   updateView,
   modeSnap,
   setModeSnap,
@@ -25,13 +30,27 @@ export default function Toolbar({
   saveCompDataJSON,
   loadCompDataJSON,
 }) {
+
+  const [filterDropDownVisibility, setFilterDropDownVisibility] = useState(false);
+  const toggleFilterDropDownVisibility = () => setFilterDropDownVisibility(!filterDropDownVisibility);
+
   return (
     <div id="toolbar">
       {/* Main toolbar controls */}
       <menu id="main">
         {/* Reload icon triggers composition data refresh */}
         <IconReload onClick={updateView} />
-
+        {/* Filter icon triggers dropdown to filter view */}
+        <IconFilter onClick={toggleFilterDropDownVisibility} className={`${(!showInactive || !showHidden) ? "active" : ""}`}/>
+        {filterDropDownVisibility && (
+            <div id="filter-dropdown">
+              <ul>
+                <li onClick={() => {setShowInactive(!showInactive); toggleFilterDropDownVisibility()}} className={`${showInactive  ? "" : "active"}`}>Hide invisible / inaudible layers</li>
+                <li onClick={() => {setShowHidden(!showHidden); toggleFilterDropDownVisibility()}} className={`${showHidden  ? "" : "active"}`}>Hide hidden layers</li>
+              </ul>
+            </div>
+          )
+        }
         {/* BPM input: number field bound to bpm state */}
         <label htmlFor="bpm">BPM</label>
         <input

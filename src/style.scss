@@ -122,6 +122,38 @@ main {
         &#main {   
             flex-grow: 1;
         }
+        #filter-dropdown {
+            position: absolute;
+            z-index: 100;
+            left: 0.5rem;
+            top: 2rem;
+            background-color: var(--light);
+            border-radius: 3px;
+            border: solid 1.5px var(--light-grey);
+            color: var(--dark-grey);
+            ul {
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+                li {
+                    padding: 0.25rem 0.5rem;
+                    transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+                    font-size: 0.9rem;
+                    cursor: pointer;
+                    &:not(:last-child) {
+                        border-bottom: solid 1.5px var(--light-grey);
+                    }
+                    &.active {
+                        background-color: var(--highlight);
+                        color: var(--light-grey);
+                    }
+                    &:hover {
+                        background-color: var(--dark-grey);
+                        color: var(--light);
+                    }
+                }
+            }
+        }
     }
 }
 

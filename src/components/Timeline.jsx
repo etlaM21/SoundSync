@@ -18,6 +18,8 @@ export default function Timeline({
     bpm,
     beatsPerBar,
     zoomLevel,
+    showInactive,
+    showHidden,
     updateView,
     waitingForAERef,
     setLoading,
@@ -275,7 +277,13 @@ export default function Timeline({
                     width: `${100 * zoomLevel}%`
                 }}
             >
-                {layers.map((layer, index) => (
+            {layers
+                .filter(layer => {
+                    const passesInactive = showInactive || layer.visible || layer.audioActive; // PROBLEM: Audi-only layers are visible = true always. Even when audioActive = false
+                    const passesHidden = showHidden || !layer.shy;
+                    return passesInactive && passesHidden;
+                })
+                .map((layer, index) => (
                     <div 
                         key={index} 
                         className="timeline-layer" 
@@ -297,7 +305,7 @@ export default function Timeline({
                         onMouseUp={() => layerMouseUp()}
                         >&nbsp;</div>
                         <span style={{ display: "inline-block", transform: `scaleX(${1 / layer.scaling})` }}>
-                            {layer.name}
+                            {layer.name} Visible? {layer.visible.toString()} Shy? {layer.shy.toString()}  audioActive? {layer.audioActive.toString()}
                         </span>
                     </div>
                 ))}

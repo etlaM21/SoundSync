@@ -13,8 +13,12 @@ export default class Layer {
       // Unique index from AE to identify this layer
       this.index = layerData.index;
       this.arrayIndex = arrayIndex;
+      // AE Data
       this.name = layerData.name;
       this.color = layerData.color;
+      this.shy = layerData.shy;
+      this.visible = layerData.visible;
+      this.audioActive = layerData.audioActive;
   
       // Timing info in seconds (from AE)
       this.inPoint = layerData.inPoint;

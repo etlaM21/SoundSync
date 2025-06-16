@@ -177,7 +177,10 @@ function getCompData() {
             inPoint: layer.inPoint,
             outPoint: layer.outPoint,
             duration: layer.outPoint - layer.inPoint,
-            color: getLabelColour(layer)
+            color: getLabelColour(layer),
+            shy: layer.shy,
+            visible: layer.enabled,
+            audioActive: layer.hasAudio ? layer.audioActive : false
         });
     }
 

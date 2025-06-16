@@ -15,6 +15,8 @@ const App = () => {
     const [beatsPerBar, setBeatsPerBar] = useState(4); // Time signature top number
     const [zoomLevel, setZoomLevel] = useState(1.0); // Controls horizontal zoom of timeline
     const timeSignature = 4; // Used only for display calculation (not editable yet)
+    const [showInactive, setShowInactive] = useState(false); // Controls visibility of inactive (video invisible, audio inactive) layers
+    const [showHidden, setShowHidden] = useState(false); // Controls visibility of hidden (shy) layers
 
     // Mode Settings
     /* GENERAL MODE WHEN COMMUNICATING WITH AE TO PREVENT CRASHES */
@@ -56,11 +58,11 @@ const App = () => {
             width: 1080,
             height: 1080,
             layers: [
-                { index: 1, name: "Layer 01", inPoint: 12, outPoint: 35, duration: 23, color: [Math.random()*255, Math.random()*255, Math.random()*255] },
-                { index: 2, name: "Layer 02", inPoint: 5, outPoint: 21, duration: 16, color: [Math.random()*255, Math.random()*255, Math.random()*255] },
-                { index: 3, name: "Layer 03", inPoint: 7.8, outPoint: 46, duration: 38.2, color: [Math.random()*255, Math.random()*255, Math.random()*255] },
-                { index: 4, name: "Layer 04", inPoint: 1, outPoint: 3, duration: 2, color: [Math.random()*255, Math.random()*255, Math.random()*255] },
-                { index: 5, name: "Layer 05", inPoint: 35, outPoint: 48, duration: 13, color: [Math.random()*255, Math.random()*255, Math.random()*255] }
+                { index: 1, name: "Layer 01", inPoint: 12, outPoint: 35, duration: 23, shy: false, visible: true, audioActive: false, color: [Math.random()*255, Math.random()*255, Math.random()*255] },
+                { index: 2, name: "Layer 02", inPoint: 5, outPoint: 21, duration: 16, shy: false, visible: true, audioActive: false, color: [Math.random()*255, Math.random()*255, Math.random()*255] },
+                { index: 3, name: "Layer 03", inPoint: 7.8, outPoint: 46, duration: 38.2, shy: false, visible: true, audioActive: false, color: [Math.random()*255, Math.random()*255, Math.random()*255] },
+                { index: 4, name: "Layer 04", inPoint: 1, outPoint: 3, duration: 2, shy: false, visible: true, audioActive: false, color: [Math.random()*255, Math.random()*255, Math.random()*255] },
+                { index: 5, name: "Layer 05", inPoint: 35, outPoint: 48, duration: 13, shy: false, visible: true, audioActive: false, color: [Math.random()*255, Math.random()*255, Math.random()*255] }
             ]
         };
     }
@@ -97,6 +99,7 @@ const App = () => {
             setLoading(true);
             fetchCompData()
                 .then((data) => {
+                    console.log("Updating View with Comp Data", data);
                     setCompData(data);
                     waitingForAERef.current = false;
                     setLoading(false);
@@ -155,6 +158,10 @@ const App = () => {
                 zoomLevel={zoomLevel}
                 increaseZoom={increaseZoom}
                 decreaseZoom={decreaseZoom}
+                showInactive={showInactive}
+                setShowInactive={setShowInactive}
+                showHidden={showHidden}
+                setShowHidden={setShowHidden}
                 updateView={updateView}
                 modeSnap={modeSnap}
                 setModeSnap={setModeSnap}
@@ -169,6 +176,8 @@ const App = () => {
                 bpm={bpm}
                 beatsPerBar={beatsPerBar}
                 zoomLevel={zoomLevel}
+                showInactive={showInactive}
+                showHidden={showHidden}
                 updateView={updateView}
                 waitingForAERef = {waitingForAERef}
                 setLoading={setLoading}
