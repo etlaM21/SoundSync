@@ -152,4 +152,4 @@ This class models a single After Effects layer on the timeline grid.
 
 ## Attributions
 
-- Icons by [UXWing](https://uxwing.com/)
+- Icons, adapted or unchanged, from [UXWing](https://uxwing.com/)

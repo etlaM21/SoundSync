@@ -5,8 +5,8 @@ import IconZoomIn from "../assets/icons/zoom-in-icon.svg";
 import IconZoomOut from "../assets/icons/zoom-out-icon.svg";
 import IconReload from "../assets/icons/reload-icon.svg";
 import IconMagnet from "../assets/icons/magnetic-icon.svg";
-import IconMove from "../assets/icons/width-icon.svg";
-import IconScale from "../assets/icons/divider-split-vertical-icon.svg";
+import IconMove from "../assets/icons/move-icon.svg";
+import IconScale from "../assets/icons/scale-icon.svg";
 
 // Functional component receives props controlling timeline and data IO
 export default function Toolbar({
