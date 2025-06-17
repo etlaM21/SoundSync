@@ -1,4 +1,9 @@
-# SoundSync
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="_branding/SoundSync_Logo_White.png">
+  <source media="(prefers-color-scheme: light)" srcset="_branding/SoundSync_Logo_Black.png">
+  <img alt="Shows a black logo in light color mode and a white one in dark color mode.">
+</picture>
+
 
 SoundSync is a After Effects CEP extension helping you align effects and layers to a music.
 
