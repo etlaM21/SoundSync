@@ -8,6 +8,8 @@ import IconZoomOut from "../assets/icons/zoom-out-icon.svg";
 import IconMagnet from "../assets/icons/magnetic-icon.svg";
 import IconMove from "../assets/icons/move-icon.svg";
 import IconScale from "../assets/icons/scale-icon.svg";
+import IconSelect from "../assets/icons/pointer-arrow-icon.svg";
+import IconDuplicate from "../assets/icons/stack-icon.svg";
 
 // Functional component receives props controlling timeline and data IO
 export default function Toolbar({
@@ -87,6 +89,12 @@ export default function Toolbar({
           onClick={decreaseZoom} 
           style={{ marginLeft: "0" }}
         />
+        {/* Mode controls */}
+        <IconSelect 
+          onClick={() => setMode("select")} 
+          className={`${mode === "select" ? "active" : ""}`}
+          style={{ marginLeft: "0" }}
+        />
         <div style={{
           display: "inline",
           height: "100%",
@@ -94,7 +102,6 @@ export default function Toolbar({
           marginLeft: "1.5px",
           marginRight: "6px"
         }} />
-        {/* Mode Controls controls */}
         <IconMagnet
           onClick={() => setModeSnap(!modeSnap)}
           className={`${modeSnap ? "active" : ""}`}
@@ -108,6 +115,19 @@ export default function Toolbar({
         <IconScale 
           onClick={() => setMode("scale")} 
           className={`${mode === "scale" ? "active" : ""}`}
+          style={{ marginLeft: "0" }}
+        />
+        <div style={{
+          display: "inline",
+          height: "100%",
+          borderLeft: "solid 3px var(--light-grey)",
+          marginLeft: "1.5px",
+          marginRight: "6px"
+        }} />
+        {/* Actions on layer */}
+        <IconDuplicate 
+          onClick={() => alert("duplicating!")} 
+          className={"action"}
           style={{ marginLeft: "0" }}
         />
       </menu>

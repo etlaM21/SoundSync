@@ -48,6 +48,9 @@ svg {
     &.active {
         fill: var(--highlight);
     }
+    &.action:hover, &:focus {
+        fill: var(--highlight);
+    }
 }
 
 button, input, select, option {
