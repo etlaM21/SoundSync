@@ -79,9 +79,11 @@ const App = () => {
             }
 
             const csInterface = new window.CSInterface();
+            console.log(csInterface);
             csInterface.evalScript("getCompData()", (result) => {
                 try {
                     const data = JSON.parse(result);
+                    console.log(data);
                     if (data.error) reject(data.error);
                     else resolve(data);
                 } catch (e) {
@@ -104,7 +106,11 @@ const App = () => {
                     waitingForAERef.current = false;
                     setLoading(false);
                 })
-                .catch((error) => console.error("Error fetching comp data:", error));
+                .catch((error, data) => {
+                    console.error("Error fetching comp data:", error);
+                    console.log("Data returned:", data);
+                    waitingForAERef.current = false;
+                });
         }
     };
 
