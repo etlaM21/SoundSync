@@ -121,36 +121,40 @@ function getLabelColour(theLayer) {
 * Each duplicate is placed at multiples of the beat interval.
 */
 function duplicateLayerOnBeat(bpm) {
-    var comp = app.project.activeItem;
+    try {
+        var comp = app.project.activeItem;
 
-    // Ensure a composition is open and active
-    if (!(comp && comp instanceof CompItem)) {
-        alert("Please open a composition.");
-        return;
+        // Ensure a composition is open and active
+        if (!(comp && comp instanceof CompItem)) {
+            alert("Please open a composition.");
+            return;
+        }
+
+        var layer = comp.selectedLayers[0];
+        if (!layer) {
+            alert("Please select a layer.");
+            return;
+        }
+
+        app.beginUndoGroup("Duplicate Layer on BPM (SoundSync)");
+
+        var frameRate = comp.frameRate;
+        var beatsPerSecond = bpm / 60;
+        var beatInterval = frameRate / beatsPerSecond; // Frames per beat (not used explicitly but could be for future frame calculations)
+
+        var currentTime = layer.startTime;
+
+        // Duplicate layer, placing each new one at increments of beat duration (seconds)
+        for (var i = 1; currentTime < comp.duration; i++) {
+            var newLayer = layer.duplicate();
+            newLayer.startTime = i * (60 / bpm);
+            currentTime = newLayer.startTime;
+        }
+
+        app.endUndoGroup();
+    } catch (err) {
+        return JSON.stringify({ error: err.message });
     }
-
-    var layer = comp.selectedLayers[0];
-    if (!layer) {
-        alert("Please select a layer.");
-        return;
-    }
-
-    app.beginUndoGroup("Duplicate Layer on BPM (SoundSync)");
-
-    var frameRate = comp.frameRate;
-    var beatsPerSecond = bpm / 60;
-    var beatInterval = frameRate / beatsPerSecond; // Frames per beat (not used explicitly but could be for future frame calculations)
-
-    var currentTime = layer.startTime;
-
-    // Duplicate layer, placing each new one at increments of beat duration (seconds)
-    for (var i = 1; currentTime < comp.duration; i++) {
-        var newLayer = layer.duplicate();
-        newLayer.startTime = i * (60 / bpm);
-        currentTime = newLayer.startTime;
-    }
-
-    app.endUndoGroup();
 }
 
 /*
@@ -160,43 +164,46 @@ function duplicateLayerOnBeat(bpm) {
 * - array of layers with index, name, inPoint, outPoint, duration, and label color RGB
 */
 function getCompData() {
-    var comp = app.project.activeItem;
-    // alert("Fetching Comp!");
-    // Validate active composition
-    if (!comp || !(comp instanceof CompItem)) {
-        return JSON.stringify({ error: "No active composition found. (SoundSync)" });
+    try {
+        var comp = app.project.activeItem;
+        // Validate active composition
+        if (!comp || !(comp instanceof CompItem)) {
+            return JSON.stringify({ error: "No active composition found. (SoundSync)" });
+        }
+
+        var layers = [];
+        // Loop through all layers to collect their data
+        for (var i = 1; i <= comp.numLayers; i++) {
+            var layer = comp.layer(i);
+            layers.push({
+                index: layer.index,
+                name: layer.name,
+                inPoint: layer.inPoint,
+                outPoint: layer.outPoint,
+                duration: layer.outPoint - layer.inPoint,
+                color: getLabelColour(layer),
+                shy: layer.shy,
+                visible: layer.enabled,
+                audioActive: layer.hasAudio ? layer.audioActive : false
+            });
+        }
+
+        // Compose comp data object
+        var compData = {
+            name: comp.name,
+            duration: comp.duration,
+            frameRate: comp.frameRate,
+            width: comp.width,
+            height: comp.height,
+            layers: layers
+        };
+
+        $.writeln(JSON.stringify(compData)); // Debugging output to console
+
+        return JSON.stringify(compData);
+    } catch (err) {
+        return JSON.stringify({ error: err.message });
     }
-
-    var layers = [];
-    // Loop through all layers to collect their data
-    for (var i = 1; i <= comp.numLayers; i++) {
-        var layer = comp.layer(i);
-        layers.push({
-            index: layer.index,
-            name: layer.name,
-            inPoint: layer.inPoint,
-            outPoint: layer.outPoint,
-            duration: layer.outPoint - layer.inPoint,
-            color: getLabelColour(layer),
-            shy: layer.shy,
-            visible: layer.enabled,
-            audioActive: layer.hasAudio ? layer.audioActive : false
-        });
-    }
-
-    // Compose comp data object
-    var compData = {
-        name: comp.name,
-        duration: comp.duration,
-        frameRate: comp.frameRate,
-        width: comp.width,
-        height: comp.height,
-        layers: layers
-    };
-
-    $.writeln(JSON.stringify(compData)); // Debugging output to console
-
-    return JSON.stringify(compData);
 }
 
 /*
@@ -205,26 +212,30 @@ function getCompData() {
 * Returns status string.
 */
 function moveLayer(layerIndex, newIn) {
-    var comp = app.project.activeItem;
+        try {
+        var comp = app.project.activeItem;
 
-    // Validate active composition
-    if (!comp || !(comp instanceof CompItem)) {
-        return "No active composition found";
+        // Validate active composition
+        if (!comp || !(comp instanceof CompItem)) {
+            return "No active composition found";
+        }
+
+        var layer = comp.layer(layerIndex);
+        if (!layer) {
+            return "Layer not found";
+        }
+
+        app.beginUndoGroup("Move Layer some Beats (SoundSync)");
+
+        // Update the layer's start time to the new position
+        layer.startTime = newIn;
+
+        app.endUndoGroup();
+
+        return "success";
+    } catch (err) {
+        return JSON.stringify({ error: err.message });
     }
-
-    var layer = comp.layer(layerIndex);
-    if (!layer) {
-        return "Layer not found";
-    }
-
-    app.beginUndoGroup("Move Layer some Beats (SoundSync)");
-
-    // Update the layer's start time to the new position
-    layer.startTime = newIn;
-
-    app.endUndoGroup();
-
-    return "success";
 }
 
 /*
@@ -233,25 +244,29 @@ function moveLayer(layerIndex, newIn) {
 * Returns status string.
 */
 function scaleLayer(layerIndex, newIn, newOut) {
-    var comp = app.project.activeItem;
+    try {
+        var comp = app.project.activeItem;
 
-    // Validate active composition
-    if (!comp || !(comp instanceof CompItem)) {
-        return "No active composition found";
+        // Validate active composition
+        if (!comp || !(comp instanceof CompItem)) {
+            return "No active composition found";
+        }
+
+        var layer = comp.layer(layerIndex);
+        if (!layer) {
+            return "Layer not found";
+        }
+
+        app.beginUndoGroup("Scale Layer some Beats (SoundSync)");
+
+        // Update the layer's start time to the new position
+        layer.startTime = newIn;
+        layer.outPoint = newOut;
+
+        app.endUndoGroup();
+
+        return "success";
+    } catch (err) {
+        return JSON.stringify({ error: err.message });
     }
-
-    var layer = comp.layer(layerIndex);
-    if (!layer) {
-        return "Layer not found";
-    }
-
-    app.beginUndoGroup("Scale Layer some Beats (SoundSync)");
-
-    // Update the layer's start time to the new position
-    layer.startTime = newIn;
-    layer.outPoint = newOut;
-
-    app.endUndoGroup();
-
-    return "success";
 }
