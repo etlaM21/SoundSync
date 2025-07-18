@@ -29,12 +29,20 @@ export default function Toolbar({
   setModeSnap,
   mode,
   setMode,
+  actionDuplicateCount,
+  setActionDuplicateCount,
+  actionDuplicateMode,
+  setActionDuplicateMode,
+  duplicateLayer,
   saveCompDataJSON,
   loadCompDataJSON,
 }) {
 
   const [filterDropDownVisibility, setFilterDropDownVisibility] = useState(false);
   const toggleFilterDropDownVisibility = () => setFilterDropDownVisibility(!filterDropDownVisibility);
+
+  const [actioDuplicateDropDownVisibility, setActioDuplicateDropDownVisibility] = useState(false);
+  const toggleActioDuplicateDropDownVisibility = () => setActioDuplicateDropDownVisibility(!actioDuplicateDropDownVisibility);
 
   return (
     <div id="toolbar">
@@ -45,7 +53,7 @@ export default function Toolbar({
         {/* Filter icon triggers dropdown to filter view */}
         <IconFilter onClick={toggleFilterDropDownVisibility} className={`${(!showInactive || !showHidden) ? "active" : ""}`}/>
         {filterDropDownVisibility && (
-            <div id="filter-dropdown">
+            <div className={"toggled-dropdown"}>
               <ul>
                 <li onClick={() => {setShowInactive(!showInactive); toggleFilterDropDownVisibility()}} className={`${showInactive  ? "" : "active"}`}>Hide invisible / inaudible layers</li>
                 <li onClick={() => {setShowHidden(!showHidden); toggleFilterDropDownVisibility()}} className={`${showHidden  ? "" : "active"}`}>Hide hidden layers</li>
@@ -126,10 +134,35 @@ export default function Toolbar({
         }} />
         {/* Actions on layer */}
         <IconDuplicate 
-          onClick={() => alert("duplicating!")} 
+          onClick={toggleActioDuplicateDropDownVisibility} 
           className={"action"}
           style={{ marginLeft: "0" }}
         />
+        {actioDuplicateDropDownVisibility && (
+            <div className={"toggled-dropdown"}>
+              <p>
+                <label htmlFor="duplicateCount">Duplicate layer for</label>
+                  <input
+                    name="duplicateCount"
+                    type="number"
+                    size="3"
+                    style={{ width: "3rem" }}
+                    value={actionDuplicateCount}
+                    onChange={(e) => setActionDuplicateCount(e.target.value)}
+                  />
+                  <select
+                    name="duplicateMode"
+                    value={actionDuplicateMode}
+                    onChange={(e) => setActionDuplicateMode(e.target.value)}
+                  >
+                    <option value="beat">beats</option>
+                    <option value="bar">bars</option>
+                  </select>
+                  <button onClick={duplicateLayer}>GO!</button>
+              </p>
+            </div>
+          )
+        }
       </menu>
 
       {/* Secondary menu with JSON save/load buttons */}

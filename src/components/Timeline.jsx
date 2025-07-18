@@ -24,6 +24,7 @@ export default function Timeline({
     waitingForAERef,
     setLoading,
     setLoadingText,
+    setSelectedLayer,
     modeSnapRef,
     modeRef
     }) {
@@ -143,8 +144,9 @@ export default function Timeline({
 
     // Start dragging a layer on mouse down
     const layerMouseDown = (layer, direction) => {
+        setSelectedLayer(layer);
         draggeDirection.current = direction;
-        console.log("direction", draggeDirection.current);
+        // console.log("direction", draggeDirection.current);
         startMouseX.current = mouseX.current;
         isDragging.current = true;
         movedBeats.current = 0;

@@ -18,6 +18,10 @@ const App = () => {
     const [showInactive, setShowInactive] = useState(false); // Controls visibility of inactive (video invisible, audio inactive) layers
     const [showHidden, setShowHidden] = useState(false); // Controls visibility of hidden (shy) layers
 
+    // Track selected layer
+    const [selectedLayer, setSelectedLayer] = useState(null);
+    const selectedLayerRef = useRef(selectedLayer);
+
     // Mode Settings
     /* GENERAL MODE WHEN COMMUNICATING WITH AE TO PREVENT CRASHES */
     const [waitingForAE, setWaitingForAE] = useState(false);
@@ -33,6 +37,10 @@ const App = () => {
     useEffect(() => {
         modeRef.current = mode;
     }, [mode]);
+    /* Different settings for action */
+    const [actionDuplicateCount, setActionDuplicateCount] = useState(3);
+    const [actionDuplicateMode, setActionDuplicateMode] = useState("beats");
+
 
 
     // Zoom controls
@@ -117,6 +125,42 @@ const App = () => {
     // Register event listener: when app regains focus, refresh data
     window.addEventListener("focus", updateView);
 
+    
+    // Function that that duplicates layer with ExtendScript via CEP
+    const duplicateAELayer = async (layerIndex, bpm, count, mode) => {
+        console.log(layerIndex, bpm, count, mode);
+        return new Promise((resolve, reject) => {
+            if (!window.CSInterface) {
+                reject("CSInterface is not available. Make sure CSInterface.js is loaded.");
+                return;
+            }
+
+            const csInterface = new window.CSInterface();
+            csInterface.evalScript(`duplicateLayer(${layerIndex}, ${bpm}, ${count}, "${mode}")`, (result) => {
+                if (result === "success") {
+                    resolve();
+                } else {
+                    reject(result);
+                }
+            });
+        });
+    };
+    
+    const duplicateLayer = async () => {
+        // console.log(selectedLayer);
+        let layerIndex = selectedLayer.index;
+        let count = actionDuplicateCount;
+        let mode = actionDuplicateMode;
+        if(!__IS_DEV__ && !waitingForAERef.current) {
+            waitingForAERef.current = true;
+            setLoadingText(`Duplicating Layer for ${count} ${mode}`);
+            setLoading(true);
+            duplicateAELayer(layerIndex, bpm, count, mode)
+                .then(() => { updateView(); waitingForAERef.current = false; setLoading(false); })
+                .catch((error) => console.error("Error duplicating AE layer:", error));
+        }
+    };
+
     // Export comp data to .json file
     const saveCompDataJSON = (filename) => {
         const blob = new Blob([JSON.stringify(compData, null, 2)], { type: 'application/json' });
@@ -173,6 +217,11 @@ const App = () => {
                 setModeSnap={setModeSnap}
                 mode={mode}
                 setMode={setMode}
+                actionDuplicateCount = {actionDuplicateCount}
+                setActionDuplicateCount = {setActionDuplicateCount}
+                actionDuplicateMode = {actionDuplicateMode}
+                setActionDuplicateMode = {setActionDuplicateMode}
+                duplicateLayer = {duplicateLayer}
                 saveCompDataJSON={saveCompDataJSON}
                 loadCompDataJSON={loadCompDataJSON}
             />
@@ -188,6 +237,7 @@ const App = () => {
                 waitingForAERef = {waitingForAERef}
                 setLoading={setLoading}
                 setLoadingText={setLoadingText}
+                setSelectedLayer = {setSelectedLayer}
                 modeSnapRef={modeSnapRef}
                 modeRef={modeRef}
             />

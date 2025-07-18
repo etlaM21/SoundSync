@@ -120,20 +120,19 @@ function getLabelColour(theLayer) {
 * Duplicates the selected layer across the comp, spaced by beats based on given BPM.
 * Each duplicate is placed at multiples of the beat interval.
 */
-function duplicateLayerOnBeat(bpm) {
+function duplicateLayer(layerIndex, bpm, count, mode) {
     try {
         var comp = app.project.activeItem;
 
-        // Ensure a composition is open and active
-        if (!(comp && comp instanceof CompItem)) {
-            alert("Please open a composition.");
-            return;
+        // Validate active composition
+        if (!comp || !(comp instanceof CompItem)) {
+            return "No active composition found";
         }
 
-        var layer = comp.selectedLayers[0];
+        var layer = comp.layer(layerIndex);
+
         if (!layer) {
-            alert("Please select a layer.");
-            return;
+            return "Layer not found";
         }
 
         app.beginUndoGroup("Duplicate Layer on BPM (SoundSync)");
@@ -144,14 +143,21 @@ function duplicateLayerOnBeat(bpm) {
 
         var currentTime = layer.startTime;
 
+        var multiplicator = 1;  // To account for choosing "bar" mode
+        if (mode === "bar") {
+            multiplicator = 4;
+        }
+
         // Duplicate layer, placing each new one at increments of beat duration (seconds)
-        for (var i = 1; currentTime < comp.duration; i++) {
+        for (var i = 1; i < count + 1; i++) {
             var newLayer = layer.duplicate();
-            newLayer.startTime = i * (60 / bpm);
-            currentTime = newLayer.startTime;
+            newLayer.startTime = i * multiplicator * (60 / bpm) + currentTime;
+            // currentTime = newLayer.startTime;
         }
 
         app.endUndoGroup();
+
+        return "success";
     } catch (err) {
         return JSON.stringify({ error: err.message });
     }

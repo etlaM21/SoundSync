@@ -34,6 +34,7 @@ button, input, select, option, label {
     padding: 1.5px 3px;
     text-transform: uppercase;
     color: var(--light);
+    transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out, outline 0.1s ease-in-out;
 }
 
 svg {
@@ -125,7 +126,7 @@ main {
         &#main {   
             flex-grow: 1;
         }
-        #filter-dropdown {
+        .toggled-dropdown {
             position: absolute;
             z-index: 100;
             left: 0.5rem;
@@ -152,6 +153,19 @@ main {
                     }
                     &:hover {
                         background-color: var(--dark-grey);
+                        color: var(--light);
+                    }
+                }
+            }
+            p {
+                margin: 0;
+                padding: 0.25rem;
+                background-color: var(--dark-grey);
+                button {
+                    background-color: var(--highlight);
+                    color: var(--dark);
+                    &:hover {
+                        background-color: var(--light-grey);
                         color: var(--light);
                     }
                 }
