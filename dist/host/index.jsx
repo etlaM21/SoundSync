@@ -161,7 +161,7 @@ function duplicateLayerOnBeat(bpm) {
 */
 function getCompData() {
     var comp = app.project.activeItem;
-
+    // alert("Fetching Comp!");
     // Validate active composition
     if (!comp || !(comp instanceof CompItem)) {
         return JSON.stringify({ error: "No active composition found. (SoundSync)" });
