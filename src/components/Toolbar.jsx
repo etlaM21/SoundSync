@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Tooltip from '@mui/material/Tooltip';
 
 // SVG icons imported as React components
 import IconReload from "../assets/icons/reload-icon.svg";
@@ -49,60 +50,74 @@ export default function Toolbar({
       {/* Main toolbar controls */}
       <menu id="main">
         {/* Reload icon triggers composition data refresh */}
-        <IconReload onClick={updateView} />
+        <Tooltip title="Refresh View" arrow>
+          <IconReload onClick={updateView} />
+        </Tooltip>
         {/* Filter icon triggers dropdown to filter view */}
-        <IconFilter onClick={toggleFilterDropDownVisibility} className={`${(!showInactive || !showHidden) ? "active" : ""}`}/>
-        {filterDropDownVisibility && (
-            <div className={"toggled-dropdown"}>
-              <ul>
-                <li onClick={() => {setShowInactive(!showInactive); toggleFilterDropDownVisibility()}} className={`${showInactive  ? "" : "active"}`}>Hide invisible / inaudible layers</li>
-                <li onClick={() => {setShowHidden(!showHidden); toggleFilterDropDownVisibility()}} className={`${showHidden  ? "" : "active"}`}>Hide hidden layers</li>
-              </ul>
-            </div>
-          )
-        }
+        <Tooltip title="Filter View" arrow>
+          <IconFilter onClick={toggleFilterDropDownVisibility} className={`${(!showInactive || !showHidden) ? "active" : ""}`}/>
+        </Tooltip>
+          {filterDropDownVisibility && (
+              <div className={"toggled-dropdown"}>
+                <ul>
+                  <li onClick={() => {setShowInactive(!showInactive); toggleFilterDropDownVisibility()}} className={`${showInactive  ? "" : "active"}`}>Hide invisible / inaudible layers</li>
+                  <li onClick={() => {setShowHidden(!showHidden); toggleFilterDropDownVisibility()}} className={`${showHidden  ? "" : "active"}`}>Hide hidden layers</li>
+                </ul>
+              </div>
+            )
+          }
         {/* BPM input: number field bound to bpm state */}
         <label htmlFor="bpm">BPM</label>
-        <input
-          name="bpm"
-          type="number"
-          size="3"
-          style={{ width: "3rem" }}
-          value={bpm}
-          // Update parent bpm state on change
-          onChange={(e) => setBpm(e.target.value)}
-        />
+        <Tooltip title="Beats per Minute" arrow>
+          <input
+            name="bpm"
+            type="number"
+            size="3"
+            style={{ width: "3rem" }}
+            value={bpm}
+            // Update parent bpm state on change
+            onChange={(e) => setBpm(e.target.value)}
+          />
+        </Tooltip>
 
         {/* Beats per bar selector */}
-        <select
-          name="beatsPerBar"
-          id="beatsPerBarSelect"
-          value={beatsPerBar}
-          // Update parent beatsPerBar state on change
-          onChange={(e) => setBeatsPerBar(e.target.value)}
-        >
-          {/* Common time signature options */}
-          <option value="2">2</option>
-          <option value="4">4</option>
-          <option value="8">8</option>
-          <option value="16">16</option>
-        </select>
+        <Tooltip title="Beats per Bar (in View)" arrow>
+          <select
+            name="beatsPerBar"
+            id="beatsPerBarSelect"
+            value={beatsPerBar}
+            // Update parent beatsPerBar state on change
+            onChange={(e) => setBeatsPerBar(e.target.value)}
+          >
+            {/* Common time signature options */}
+            <option value="2">2</option>
+            <option value="4">4</option>
+            <option value="8">8</option>
+            <option value="16">16</option>
+          </select>
+        </Tooltip>
 
         {/* Zoom controls */}
-        <IconZoomIn
-          onClick={increaseZoom}
-          style={{ marginLeft: "1.5px" }}
-        />
-        <IconZoomOut 
-          onClick={decreaseZoom} 
-          style={{ marginLeft: "0" }}
-        />
+        <Tooltip title="Zoom In" arrow>
+          <IconZoomIn
+            onClick={increaseZoom}
+            style={{ marginLeft: "1.5px" }}
+          />
+        </Tooltip>
+        <Tooltip title="Zoom Out" arrow>
+          <IconZoomOut 
+            onClick={decreaseZoom} 
+            style={{ marginLeft: "0" }}
+          />
+        </Tooltip>
         {/* Mode controls */}
-        <IconSelect 
-          onClick={() => setMode("select")} 
-          className={`${mode === "select" ? "active" : ""}`}
-          style={{ marginLeft: "0" }}
-        />
+        <Tooltip title="Select Layer" arrow>
+          <IconSelect 
+            onClick={() => setMode("select")} 
+            className={`${mode === "select" ? "active" : ""}`}
+            style={{ marginLeft: "0" }}
+          />
+        </Tooltip>
         <div style={{
           display: "inline",
           height: "100%",
@@ -110,21 +125,27 @@ export default function Toolbar({
           marginLeft: "1.5px",
           marginRight: "6px"
         }} />
-        <IconMagnet
-          onClick={() => setModeSnap(!modeSnap)}
-          className={`${modeSnap ? "active" : ""}`}
-          style={{ marginLeft: "0" }}
-        />
-        <IconMove 
-          onClick={() => setMode("move")} 
-          className={`${mode === "move" ? "active" : ""}`}
-          style={{ marginLeft: "0" }}
-        />
-        <IconScale 
-          onClick={() => setMode("scale")} 
-          className={`${mode === "scale" ? "active" : ""}`}
-          style={{ marginLeft: "0" }}
-        />
+        <Tooltip title="Snap Layer to Beats when changing" arrow>
+          <IconMagnet
+            onClick={() => setModeSnap(!modeSnap)}
+            className={`${modeSnap ? "active" : ""}`}
+            style={{ marginLeft: "0" }}
+          />
+        </Tooltip>
+        <Tooltip title="Move Layer by beat" arrow>
+          <IconMove 
+            onClick={() => setMode("move")} 
+            className={`${mode === "move" ? "active" : ""}`}
+            style={{ marginLeft: "0" }}
+          />
+        </Tooltip>
+        <Tooltip title="Scale Layer by beat" arrow>
+          <IconScale 
+            onClick={() => setMode("scale")} 
+            className={`${mode === "scale" ? "active" : ""}`}
+            style={{ marginLeft: "0" }}
+          />
+        </Tooltip>
         <div style={{
           display: "inline",
           height: "100%",
@@ -133,11 +154,13 @@ export default function Toolbar({
           marginRight: "6px"
         }} />
         {/* Actions on layer */}
-        <IconDuplicate 
-          onClick={toggleActioDuplicateDropDownVisibility} 
-          className={"action"}
-          style={{ marginLeft: "0" }}
-        />
+        <Tooltip title="Repeat Layer on beat" arrow>
+          <IconDuplicate 
+            onClick={toggleActioDuplicateDropDownVisibility} 
+            className={"action"}
+            style={{ marginLeft: "0" }}
+          />
+        </Tooltip>
         {actioDuplicateDropDownVisibility && (
             <div className={"toggled-dropdown"}>
               <p>

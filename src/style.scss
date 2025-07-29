@@ -128,7 +128,7 @@ main {
         }
         .toggled-dropdown {
             position: absolute;
-            z-index: 100;
+            z-index: 1600; /* MUI Tooltip sits at z 1600 */
             left: 0.5rem;
             top: 2rem;
             background-color: var(--light);
