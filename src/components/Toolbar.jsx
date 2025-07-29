@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Tooltip from '@mui/material/Tooltip';
+import Dialog from '@mui/material/Dialog';
 
 // SVG icons imported as React components
 import IconReload from "../assets/icons/reload-icon.svg";
@@ -161,7 +162,34 @@ export default function Toolbar({
             style={{ marginLeft: "0" }}
           />
         </Tooltip>
-        {actioDuplicateDropDownVisibility && (
+        <Dialog
+          open={actioDuplicateDropDownVisibility}
+          onClose={toggleActioDuplicateDropDownVisibility}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+           <p style={{margin: "0.25rem"}}>
+              <label htmlFor="duplicateCount">Repeat Layer for</label>
+                <input
+                  name="duplicateCount"
+                  type="number"
+                  size="4"
+                  style={{ width: "3rem" }}
+                  value={actionDuplicateCount}
+                  onChange={(e) => setActionDuplicateCount(e.target.value)}
+                />
+                <select
+                  name="duplicateMode"
+                  value={actionDuplicateMode}
+                  onChange={(e) => setActionDuplicateMode(e.target.value)}
+                >
+                  <option value="beat">beats</option>
+                  <option value="bar">bars</option>
+                </select>
+                <button onClick={() => {duplicateLayer(); toggleActioDuplicateDropDownVisibility();}}>GO!</button>
+              </p>
+        </Dialog>
+        { /*actioDuplicateDropDownVisibility && (
             <div className={"toggled-dropdown"}>
               <p>
                 <label htmlFor="duplicateCount">Repeat Layer for</label>
@@ -185,7 +213,7 @@ export default function Toolbar({
               </p>
             </div>
           )
-        }
+        */}
       </menu>
 
       {/* Secondary menu with JSON save/load buttons */}

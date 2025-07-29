@@ -1,4 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
+import Dialog from '@mui/material/Dialog';
+
 import "./style.scss";
 import Toolbar from "./components/Toolbar";
 import Timeline from "./components/Timeline";
@@ -9,6 +11,10 @@ const App = () => {
     // UI loading states
     const [loading, setLoading] = useState(false);
     const [loadingText, setLoadingText] = useState("");
+    // UI ALert Dialog
+    const [alertVisiblity, setAlertVisiblity] = useState(false);
+    const alertTitle = useRef("Alert!");
+    const alertText = useRef("Text of the alert.");
 
     // Timeline settings
     const [bpm, setBpm] = useState(120.0); // Beats per minute
@@ -148,16 +154,24 @@ const App = () => {
     
     const duplicateLayer = async () => {
         // console.log(selectedLayer);
-        let layerIndex = selectedLayer.index;
-        let count = actionDuplicateCount;
-        let mode = actionDuplicateMode;
-        if(!__IS_DEV__ && !waitingForAERef.current) {
-            waitingForAERef.current = true;
-            setLoadingText(`Duplicating Layer for ${count} ${mode}`);
-            setLoading(true);
-            duplicateAELayer(layerIndex, bpm, count, mode)
-                .then(() => { updateView(); waitingForAERef.current = false; setLoading(false); })
-                .catch((error) => console.error("Error duplicating AE layer:", error));
+        try {
+            if(selectedLayer === null) throw "No Layer selected";
+            let layerIndex = selectedLayer.index;
+            let count = actionDuplicateCount;
+            let mode = actionDuplicateMode;
+            if(!__IS_DEV__ && !waitingForAERef.current) {
+                waitingForAERef.current = true;
+                setLoadingText(`Duplicating Layer for ${count} ${mode}`);
+                setLoading(true);
+                duplicateAELayer(layerIndex, bpm, count, mode)
+                    .then(() => { updateView(); waitingForAERef.current = false; setLoading(false); })
+                    .catch((error) => console.error("Error duplicating AE layer:", error));
+            }
+        } catch (error) {
+            console.error(error);
+            setAlertVisiblity(true);
+            alertTitle.current = "Error!";
+            alertText.current = error;
         }
     };
 
@@ -199,6 +213,17 @@ const App = () => {
     return (
         <main>
             {loading && <Loader text={loadingText} />}
+
+            <Dialog
+                open={alertVisiblity}
+                onClose={() => setAlertVisiblity(false)}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <h1>{alertTitle.current}</h1>
+                <p style={{margin: "0.25rem"}}>{alertText.current}</p>
+                <button onClick={() =>setAlertVisiblity(false)}>Okay</button>
+            </Dialog>
 
             <Toolbar
                 bpm={bpm}
