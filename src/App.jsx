@@ -38,7 +38,7 @@ const App = () => {
         modeRef.current = mode;
     }, [mode]);
     /* Different settings for action */
-    const [actionDuplicateCount, setActionDuplicateCount] = useState(3);
+    const [actionDuplicateCount, setActionDuplicateCount] = useState(4);
     const [actionDuplicateMode, setActionDuplicateMode] = useState("beats");
 
 

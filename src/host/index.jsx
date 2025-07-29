@@ -149,7 +149,7 @@ function duplicateLayer(layerIndex, bpm, count, mode) {
         }
 
         // Duplicate layer, placing each new one at increments of beat duration (seconds)
-        for (var i = 1; i < count + 1; i++) {
+        for (var i = 1; i < count; i++) {
             var newLayer = layer.duplicate();
             newLayer.startTime = i * multiplicator * (60 / bpm) + currentTime;
             // currentTime = newLayer.startTime;

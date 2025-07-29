@@ -164,11 +164,11 @@ export default function Toolbar({
         {actioDuplicateDropDownVisibility && (
             <div className={"toggled-dropdown"}>
               <p>
-                <label htmlFor="duplicateCount">Duplicate layer for</label>
+                <label htmlFor="duplicateCount">Repeat Layer for</label>
                   <input
                     name="duplicateCount"
                     type="number"
-                    size="3"
+                    size="4"
                     style={{ width: "3rem" }}
                     value={actionDuplicateCount}
                     onChange={(e) => setActionDuplicateCount(e.target.value)}
