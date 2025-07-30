@@ -51,11 +51,11 @@ export default function Toolbar({
       {/* Main toolbar controls */}
       <menu id="main">
         {/* Reload icon triggers composition data refresh */}
-        <Tooltip title="Refresh View" arrow>
+        <Tooltip title="Refresh View" >
           <IconReload onClick={updateView} />
         </Tooltip>
         {/* Filter icon triggers dropdown to filter view */}
-        <Tooltip title="Filter View" arrow>
+        <Tooltip title="Filter View" >
           <IconFilter onClick={toggleFilterDropDownVisibility} className={`${(!showInactive || !showHidden) ? "active" : ""}`}/>
         </Tooltip>
           {filterDropDownVisibility && (
@@ -69,7 +69,7 @@ export default function Toolbar({
           }
         {/* BPM input: number field bound to bpm state */}
         <label htmlFor="bpm">BPM</label>
-        <Tooltip title="Beats per Minute" arrow>
+        <Tooltip title="Beats per Minute" >
           <input
             name="bpm"
             type="number"
@@ -82,7 +82,7 @@ export default function Toolbar({
         </Tooltip>
 
         {/* Beats per bar selector */}
-        <Tooltip title="Beats per Bar (in View)" arrow>
+        <Tooltip title="Beats per Bar (in View)" >
           <select
             name="beatsPerBar"
             id="beatsPerBarSelect"
@@ -99,20 +99,20 @@ export default function Toolbar({
         </Tooltip>
 
         {/* Zoom controls */}
-        <Tooltip title="Zoom In" arrow>
+        <Tooltip title="Zoom In" >
           <IconZoomIn
             onClick={increaseZoom}
             style={{ marginLeft: "1.5px" }}
           />
         </Tooltip>
-        <Tooltip title="Zoom Out" arrow>
+        <Tooltip title="Zoom Out" >
           <IconZoomOut 
             onClick={decreaseZoom} 
             style={{ marginLeft: "0" }}
           />
         </Tooltip>
         {/* Mode controls */}
-        <Tooltip title="Select Layer" arrow>
+        <Tooltip title="Select Layer" >
           <IconSelect 
             onClick={() => setMode("select")} 
             className={`${mode === "select" ? "active" : ""}`}
@@ -126,21 +126,21 @@ export default function Toolbar({
           marginLeft: "1.5px",
           marginRight: "6px"
         }} />
-        <Tooltip title="Snap Layer to Beats when changing" arrow>
+        <Tooltip title="Snap Layer to Beats when changing" >
           <IconMagnet
             onClick={() => setModeSnap(!modeSnap)}
             className={`${modeSnap ? "active" : ""}`}
             style={{ marginLeft: "0" }}
           />
         </Tooltip>
-        <Tooltip title="Move Layer by beat" arrow>
+        <Tooltip title="Move Layer by beat" >
           <IconMove 
             onClick={() => setMode("move")} 
             className={`${mode === "move" ? "active" : ""}`}
             style={{ marginLeft: "0" }}
           />
         </Tooltip>
-        <Tooltip title="Scale Layer by beat" arrow>
+        <Tooltip title="Scale Layer by beat" >
           <IconScale 
             onClick={() => setMode("scale")} 
             className={`${mode === "scale" ? "active" : ""}`}
@@ -155,7 +155,7 @@ export default function Toolbar({
           marginRight: "6px"
         }} />
         {/* Actions on layer */}
-        <Tooltip title="Repeat Layer on beat" arrow>
+        <Tooltip title="Repeat Layer on beat" >
           <IconDuplicate 
             onClick={toggleActioDuplicateDropDownVisibility} 
             className={"action"}
@@ -168,7 +168,7 @@ export default function Toolbar({
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-           <p style={{margin: "0.25rem"}}>
+           <p style={{margin: "0"}}>
               <label htmlFor="duplicateCount">Repeat Layer for</label>
                 <input
                   name="duplicateCount"

@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 
 import "./style.scss";
@@ -8,6 +9,34 @@ import Loader from "./components/Loader";
 
 // Main React component
 const App = () => {
+    
+
+    const theme = createTheme({
+        components: {
+            MuiTooltip: {
+                styleOverrides: {
+                    tooltip: {
+                        backgroundColor: 'var(--light-grey)',
+                        border: 'solid 1px var(--light)',
+                        fontSize: '0.75rem',
+                        color: 'var(--lightest)',
+                    }
+                },
+            },
+            MuiDialog: {
+                styleOverrides: {
+                    paper: {
+                        backgroundColor: 'var(--light-grey)',
+                        border: 'solid 1px var(--light)',
+                        fontSize: '1rem',
+                        color: 'var(--lightest)',
+                        padding: '0.25rem'
+                    }
+                },
+            },
+        },
+    });
+
     // UI loading states
     const [loading, setLoading] = useState(false);
     const [loadingText, setLoadingText] = useState("");
@@ -211,74 +240,76 @@ const App = () => {
     };
 
     return (
-        <main>
-            {loading && <Loader text={loadingText} />}
+        <ThemeProvider  theme={theme}>
+            <main>
+                {loading && <Loader text={loadingText} />}
 
-            <Dialog
-                open={alertVisiblity}
-                onClose={() => setAlertVisiblity(false)}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <h1>{alertTitle.current}</h1>
-                <p style={{margin: "0.25rem"}}>{alertText.current}</p>
-                <button onClick={() =>setAlertVisiblity(false)}>Okay</button>
-            </Dialog>
+                <Dialog
+                    open={alertVisiblity}
+                    onClose={() => setAlertVisiblity(false)}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <h1 style={{margin: "0.25rem", color: "var(--warning)", textAlign: "center"}}>{alertTitle.current}</h1>
+                    <p style={{margin: "0.25rem"}}>{alertText.current}</p>
+                    <button onClick={() =>setAlertVisiblity(false)}>Okay</button>
+                </Dialog>
 
-            <Toolbar
-                bpm={bpm}
-                setBpm={setBpm}
-                beatsPerBar={beatsPerBar}
-                setBeatsPerBar={setBeatsPerBar}
-                zoomLevel={zoomLevel}
-                increaseZoom={increaseZoom}
-                decreaseZoom={decreaseZoom}
-                showInactive={showInactive}
-                setShowInactive={setShowInactive}
-                showHidden={showHidden}
-                setShowHidden={setShowHidden}
-                updateView={updateView}
-                modeSnap={modeSnap}
-                setModeSnap={setModeSnap}
-                mode={mode}
-                setMode={setMode}
-                actionDuplicateCount = {actionDuplicateCount}
-                setActionDuplicateCount = {setActionDuplicateCount}
-                actionDuplicateMode = {actionDuplicateMode}
-                setActionDuplicateMode = {setActionDuplicateMode}
-                duplicateLayer = {duplicateLayer}
-                saveCompDataJSON={saveCompDataJSON}
-                loadCompDataJSON={loadCompDataJSON}
-            />
+                <Toolbar
+                    bpm={bpm}
+                    setBpm={setBpm}
+                    beatsPerBar={beatsPerBar}
+                    setBeatsPerBar={setBeatsPerBar}
+                    zoomLevel={zoomLevel}
+                    increaseZoom={increaseZoom}
+                    decreaseZoom={decreaseZoom}
+                    showInactive={showInactive}
+                    setShowInactive={setShowInactive}
+                    showHidden={showHidden}
+                    setShowHidden={setShowHidden}
+                    updateView={updateView}
+                    modeSnap={modeSnap}
+                    setModeSnap={setModeSnap}
+                    mode={mode}
+                    setMode={setMode}
+                    actionDuplicateCount = {actionDuplicateCount}
+                    setActionDuplicateCount = {setActionDuplicateCount}
+                    actionDuplicateMode = {actionDuplicateMode}
+                    setActionDuplicateMode = {setActionDuplicateMode}
+                    duplicateLayer = {duplicateLayer}
+                    saveCompDataJSON={saveCompDataJSON}
+                    loadCompDataJSON={loadCompDataJSON}
+                />
 
-            <Timeline
-                compData={compData}
-                bpm={bpm}
-                beatsPerBar={beatsPerBar}
-                zoomLevel={zoomLevel}
-                showInactive={showInactive}
-                showHidden={showHidden}
-                updateView={updateView}
-                waitingForAERef = {waitingForAERef}
-                setLoading={setLoading}
-                setLoadingText={setLoadingText}
-                setSelectedLayer = {setSelectedLayer}
-                modeSnapRef={modeSnapRef}
-                modeRef={modeRef}
-            />
+                <Timeline
+                    compData={compData}
+                    bpm={bpm}
+                    beatsPerBar={beatsPerBar}
+                    zoomLevel={zoomLevel}
+                    showInactive={showInactive}
+                    showHidden={showHidden}
+                    updateView={updateView}
+                    waitingForAERef = {waitingForAERef}
+                    setLoading={setLoading}
+                    setLoadingText={setLoadingText}
+                    setSelectedLayer = {setSelectedLayer}
+                    modeSnapRef={modeSnapRef}
+                    modeRef={modeRef}
+                />
 
-            <div id="information">
-                <hr />
-                <p>
-                    <small>
-                        comp duration: {compData.duration} seconds |
-                        total beats: {Math.floor(compData.duration * (bpm / 60 * (beatsPerBar / 4)))} |
-                        total bars: {Math.ceil((Math.floor(compData.duration * (bpm / 60 * (timeSignature / 4)))) / timeSignature)} |
-                        beats per second: { bpm / 60 * (beatsPerBar / 4)}
-                    </small>
-                </p>
-            </div>
-        </main>
+                <div id="information">
+                    <hr />
+                    <p>
+                        <small>
+                            comp duration: {compData.duration} seconds |
+                            total beats: {Math.floor(compData.duration * (bpm / 60 * (beatsPerBar / 4)))} |
+                            total bars: {Math.ceil((Math.floor(compData.duration * (bpm / 60 * (timeSignature / 4)))) / timeSignature)} |
+                            beats per second: { bpm / 60 * (beatsPerBar / 4)}
+                        </small>
+                    </p>
+                </div>
+            </main>
+        </ ThemeProvider >
     );
 };
 
