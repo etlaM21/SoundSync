@@ -9,7 +9,6 @@ import Loader from "./components/Loader";
 
 // Main React component
 const App = () => {
-    
 
     const theme = createTheme({
         components: {
@@ -113,6 +112,10 @@ const App = () => {
     // React state holding composition data
     const [compData, setCompData] = useState(placeholderCompData);
 
+    // React state holding audio layers and selected audio layer
+    const [audioLayers, setAudioLayers] = useState([]);
+    const [selectedAudioURL, setSelectedAudioURL] = useState(null);
+
     // Function that fetches composition data from ExtendScript via CEP
     const fetchCompData = async () => {
         return new Promise((resolve, reject) => {
@@ -122,7 +125,7 @@ const App = () => {
             }
 
             const csInterface = new window.CSInterface();
-            console.log(csInterface);
+            // console.log(csInterface);
             csInterface.evalScript("getCompData()", (result) => {
                 try {
                     const data = JSON.parse(result);
@@ -131,6 +134,26 @@ const App = () => {
                     else resolve(data);
                 } catch (e) {
                     reject("Invalid JSON response from ExtendScript.");
+                }
+            });
+        });
+    };
+
+    // Function that fetchs audio layer datafrom ExtendScript via CEP
+    const getAudioLayersFromAE = () => {
+        return new Promise((resolve, reject) => {
+            if (!window.CSInterface) {
+                reject("CSInterface is not available. Make sure CSInterface.js is loaded.");
+                return;
+            }
+            const csInterface = new window.CSInterface();
+            csInterface.evalScript("getAudioLayers()", (result) => {
+                try {
+                    const data = JSON.parse(result);
+                    if (data.error) reject(data.error);
+                    else resolve(data.layers);
+                } catch (err) {
+                    reject("Invalid JSON from ExtendScript");
                 }
             });
         });
@@ -151,6 +174,21 @@ const App = () => {
                 })
                 .catch((error, data) => {
                     console.error("Error fetching comp data:", error);
+                    console.log("Data returned:", data);
+                    waitingForAERef.current = false;
+                });
+            waitingForAERef.current = true;
+            setLoadingText("Fetching Audio Layers");
+            setLoading(true);
+            getAudioLayersFromAE()
+                .then((data) => {
+                    console.log("Updating Audio Layers", data);
+                    setAudioLayers(data);
+                    waitingForAERef.current = false;
+                    setLoading(false);
+                })
+                .catch((error, data) => {
+                    console.error("Error fetching audio layers:", error);
                     console.log("Data returned:", data);
                     waitingForAERef.current = false;
                 });
@@ -277,6 +315,8 @@ const App = () => {
                     actionDuplicateMode = {actionDuplicateMode}
                     setActionDuplicateMode = {setActionDuplicateMode}
                     duplicateLayer = {duplicateLayer}
+                    audioLayers = {audioLayers}
+                    setSelectedAudioURL = {setSelectedAudioURL}
                     saveCompDataJSON={saveCompDataJSON}
                     loadCompDataJSON={loadCompDataJSON}
                 />
@@ -295,6 +335,7 @@ const App = () => {
                     setSelectedLayer = {setSelectedLayer}
                     modeSnapRef={modeSnapRef}
                     modeRef={modeRef}
+                    selectedAudioURL = {selectedAudioURL}
                 />
 
                 <div id="information">

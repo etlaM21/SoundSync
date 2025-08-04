@@ -36,6 +36,8 @@ export default function Toolbar({
   actionDuplicateMode,
   setActionDuplicateMode,
   duplicateLayer,
+  audioLayers,
+  setSelectedAudioURL,
   saveCompDataJSON,
   loadCompDataJSON,
 }) {
@@ -218,6 +220,14 @@ export default function Toolbar({
 
       {/* Secondary menu with JSON save/load buttons */}
       <menu id="second">
+        <select onChange={(e) => setSelectedAudioURL(e.target.value)}>
+            <option>Select audio layer</option>
+            {audioLayers.map((layer) => (
+                <option key={layer.index} value={layer.url}>
+                    {layer.name}
+                </option>
+            ))}
+        </select> 
         <button onClick={() => saveCompDataJSON("soundsync")}>SAVE JSON</button>
         <button onClick={loadCompDataJSON}>LOAD JSON</button>
       </menu>

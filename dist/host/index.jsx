@@ -149,7 +149,7 @@ function duplicateLayer(layerIndex, bpm, count, mode) {
         }
 
         // Duplicate layer, placing each new one at increments of beat duration (seconds)
-        for (var i = 1; i < count + 1; i++) {
+        for (var i = 1; i < count; i++) {
             var newLayer = layer.duplicate();
             newLayer.startTime = i * multiplicator * (60 / bpm) + currentTime;
             // currentTime = newLayer.startTime;
@@ -207,6 +207,43 @@ function getCompData() {
         $.writeln(JSON.stringify(compData)); // Debugging output to console
 
         return JSON.stringify(compData);
+    } catch (err) {
+        return JSON.stringify({ error: err.message });
+    }
+}
+
+/*
+* getAudioLayers
+* Returns JSON array with all audio layers in composition
+*/
+
+function getAudioLayers() {
+    try {
+        var comp = app.project.activeItem;
+        if (!comp || !(comp instanceof CompItem)) {
+            return JSON.stringify({ error: "No active composition found." });
+        }
+
+        var result = [];
+
+        for (var i = 1; i <= comp.numLayers; i++) {
+            var layer = comp.layer(i);
+
+            // Only AVLayer (Audio-Video) and has audio
+            if (layer.hasAudio && layer instanceof AVLayer) {
+                var source = layer.source;
+
+                if (source && source.mainSource && source.mainSource.file) {
+                    result.push({
+                        index: i,
+                        name: layer.name,
+                        url: source.mainSource.file.fsName // Full system path
+                    });
+                }
+            }
+        }
+
+        return JSON.stringify({ layers: result });
     } catch (err) {
         return JSON.stringify({ error: err.message });
     }

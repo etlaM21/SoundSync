@@ -213,6 +213,43 @@ function getCompData() {
 }
 
 /*
+* getAudioLayers
+* Returns JSON array with all audio layers in composition
+*/
+
+function getAudioLayers() {
+    try {
+        var comp = app.project.activeItem;
+        if (!comp || !(comp instanceof CompItem)) {
+            return JSON.stringify({ error: "No active composition found." });
+        }
+
+        var result = [];
+
+        for (var i = 1; i <= comp.numLayers; i++) {
+            var layer = comp.layer(i);
+
+            // Only AVLayer (Audio-Video) and has audio
+            if (layer.hasAudio && layer instanceof AVLayer) {
+                var source = layer.source;
+
+                if (source && source.mainSource && source.mainSource.file) {
+                    result.push({
+                        index: i,
+                        name: layer.name,
+                        url: source.mainSource.file.fsName // Full system path
+                    });
+                }
+            }
+        }
+
+        return JSON.stringify({ layers: result });
+    } catch (err) {
+        return JSON.stringify({ error: err.message });
+    }
+}
+
+/*
 * moveLayer
 * Moves the start time of a given layer (by index) to a new time position.
 * Returns status string.

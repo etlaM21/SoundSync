@@ -28,7 +28,8 @@ export default function Timeline({
     setLoadingText,
     setSelectedLayer,
     modeSnapRef,
-    modeRef
+    modeRef,
+    selectedAudioURL
     }) {
 
 
@@ -38,7 +39,7 @@ const wavesurferContainerRef = useRef(null)
 
   const { wavesurfer, isReady, isPlaying, currentTime } = useWavesurfer({
     container: wavesurferContainerRef,
-    url: 'testsong_dance.mp3',
+    url: selectedAudioURL,
     waveColor: "#4096f3",
     height: "auto",
     dragToSeek: "false",
@@ -366,7 +367,9 @@ const wavesurferContainerRef = useRef(null)
                     </div>
                 ))}
                 {/* Timeline audio waveform showing using Wavesurfer JS */}
-                <div className="grid-audiowaveform" ref={wavesurferContainerRef} />
+                {selectedAudioURL && (
+                    <div className="grid-audiowaveform" ref={wavesurferContainerRef} />
+                )}
             </div>
         </div>
     );
