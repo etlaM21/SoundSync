@@ -44,7 +44,7 @@ const wavesurferContainerRef = useRef(null)
     height: "auto",
     dragToSeek: "false",
     barWidth: "3",
-    barHeight: "0.75"
+    barHeight: "1"
   })
     /*
      * SETUP: Calculate timing metrics for timeline grid
