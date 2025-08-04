@@ -17,9 +17,6 @@ It brings a BPM timeline to After Effects, enabling you to edit on beat.
 
 Affects whether shfiting or scaling a layer to beats snaps their inPoint to the closest beat at the cursor in the SoundSync timeline.
 
-> [!NOTE]  
-> Not yet tested.
-
 #### `Shift Layer by beat`
 
 Shifts the selected layer by the beats moved in the SoundSync timeline.
@@ -32,19 +29,15 @@ Scales the inPoint or onPoint of the selected layer by the beats moved in the So
 
 _SNAP MODE:_ Shifts the inPoint/outPoint to the closest beat at the cursor and keeps the opposite (inPoint or outPoint) at the current position. Thus changing the duration of the layer.
 
-> [!NOTE]  
-> Not yet tested.
-
 ### Additional Functions
 
 #### `Duplicate Layer for the following x beats`
 
-Duplicates the selected layer across the comp, spaced by beats based on given BPM for a set amount of copies.
+Duplicates the selected layer across the comp, spaced by beats or bars based on given BPM for a set amount of copies.
 
 The first duplication starts 1 beat after the current layer's inPoint.
 
-> [!NOTE]  
-> Half of the script is implmented in the After Effects script (index.jsx), does not start at the current layer yet and does not end after n copies.
+
 
 ## Interface Architecture
 
@@ -113,23 +106,27 @@ This class models a single After Effects layer on the timeline grid.
 
 ## After Effects Scripts
 
-### `duplicateLayerOnBeat(bpm)`
-
-- Duplicates the currently selected layer throughout the active composition.
-- Places duplicates spaced according to the beat interval calculated from the given BPM.
-- Automatically stops duplicating when the end of the composition is reached.
-- Uses an undo group for safe operation within After Effects.
-
 ### `getCompData()`
 
 - Gathers detailed information about the active composition and its layers.
-- Returns a JSON string with the following info:
+- Returns a JSON object with the following info:
   - Composition name, duration, frame rate, width, and height.
   - An array of layers, each containing:
     - Layer index and name.
     - In and out points, and duration.
     - Label color as an RGB triplet.
 - Useful for syncing external apps or UI with After Effects composition data.
+
+### `getAudioLayers()`
+
+- Gathers information about layers with audio in the active composition.
+- Returns a JSON array with the following info:
+  - Composition name, duration, frame rate, width, and height.
+  - An array of layers, each containing:
+    - Layer index.
+    - Layer name.
+    - Audio URL (file path).
+- Used to select audio layer in the toolbar to be displayed with wavesurfer.js in the background of timeline.
 
 ### `moveLayer(layerIndex, newIn)`
 
@@ -143,15 +140,21 @@ This class models a single After Effects layer on the timeline grid.
 - Wraps the action in an undo group.
 - Returns a status string to indicate success or failure.
 
+### `duplicateLayerOnBeat(bpm)`
+
+- Duplicates the currently selected layer throughout the active composition.
+- Places duplicates spaced according to the beat interval calculated from the given BPM.
+- Automatically stops duplicating when the end of the composition is reached.
+- Uses an undo group for safe operation within After Effects.
+
 ## Outlook
 
 ### Timeline Functions
 
-- Filter only visible layers of composition (maybe other ways too?)
-- Show Waveform in the background of timelime
+- Show Waveform in the background of timelime correctly trimmed and move as it is in AE comp
 - Multi-Select
 - Automatic Keyframes / Expressions on beat
-- Mark parts of song: _"Intro", "Drop", "Part 1", etc._
+- Mark parts of song: _"Intro", "Drop", "Part 1", etc._ (probably use AE layer markers to sync timelines)
 
 ### SoundSync Functions
 
@@ -160,3 +163,5 @@ This class models a single After Effects layer on the timeline grid.
 ## Attributions
 
 - Icons, adapted or unchanged, from [UXWing](https://uxwing.com/)
+- Audio Waveform displayed with [wavesurfer.js](https://wavesurfer.xyz/)
+- Modals implemented with [Material UI](https://mui.com/)
