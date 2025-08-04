@@ -57,6 +57,7 @@ module.exports = (env, argv) => {
       new webpack.HotModuleReplacementPlugin(),
       new CopyWebpackPlugin({
         patterns: [
+          { from: 'public', to: '' },
           { from: 'src/CSXS/manifest.xml', to: 'CSXS/manifest.xml' },
           { from: 'src/host/index.jsx', to: 'host/' },
           { from: 'src/CSInterface.js', to: '' }
