@@ -220,7 +220,12 @@ export default function Toolbar({
 
       {/* Secondary menu with JSON save/load buttons */}
       <menu id="second">
-        <select onChange={(e) => setSelectedAudioURL(e.target.value)}>
+        <select onChange={(e) => {
+          const normalizePath = (path) => path.replace(/\\/g, "/");
+              const audioFileUrl = `file://${normalizePath(e.target.value)}`;
+              setSelectedAudioURL(audioFileUrl);
+              console.log("Selected Audio URL", audioFileUrl)
+            }}>
             <option>Select audio layer</option>
             {audioLayers.map((layer) => (
                 <option key={layer.index} value={layer.url}>
