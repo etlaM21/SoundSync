@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
+import { useWavesurfer } from "@wavesurfer/react";
 import Layer from "./Layer";
+
 
 /**
  * Timeline component renders the timeline grid with layers and allows
@@ -29,6 +31,20 @@ export default function Timeline({
     modeRef
     }) {
 
+
+/* WAVEASURFER TEST */
+
+const wavesurferContainerRef = useRef(null)
+
+  const { wavesurfer, isReady, isPlaying, currentTime } = useWavesurfer({
+    container: wavesurferContainerRef,
+    url: 'testsong_dance.mp3',
+    waveColor: "#4096f3",
+    height: "auto",
+    dragToSeek: "false",
+    barWidth: "3",
+    barHeight: "0.75"
+  })
     /*
      * SETUP: Calculate timing metrics for timeline grid
      */
@@ -349,6 +365,8 @@ export default function Timeline({
                         ))}
                     </div>
                 ))}
+                {/* Timeline audio waveform showing using Wavesurfer JS */}
+                <div className="grid-audiowaveform" ref={wavesurferContainerRef} />
             </div>
         </div>
     );

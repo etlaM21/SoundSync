@@ -197,11 +197,11 @@ main {
     border: solid 3px var(--light-grey);
     background-color: transparent;
     overflow-x: auto;
-    .grid-timeline, .grid-bar, .grid-layers {
+    .grid-timeline, .grid-bar, .grid-layers, .grid-audiowaveform {
         column-gap: 3px;
         min-width: 100%;
     }
-    .grid-bar, .grid-beat {
+    .grid-bar, .grid-beat, .grid-audiowaveform {
         height: 100%;
     }
     .grid-timeline {
@@ -223,6 +223,8 @@ main {
         }
     }
     .grid-layers {
+        position: relative;
+        z-index: 100;
         display: grid;
         grid-template: repeat(1, 1fr) / repeat(12, 1fr);
         background-color: transparent;
@@ -272,5 +274,12 @@ main {
                 outline-offset: 2px;
             }
         }
+    }
+    .grid-audiowaveform {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 0;
+        opacity: .25;
     }
 }
