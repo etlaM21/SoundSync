@@ -37,7 +37,28 @@ Duplicates the selected layer across the comp, spaced by beats or bars based on 
 
 The first duplication starts 1 beat after the current layer's inPoint.
 
+## Software Architecture
 
+SoundSync is a React App with a custom webpack bundle configuration to provide a distribution in the proper format for it to be copied into the Adobe CEP extension folder.
+
+### 1. React Interface
+
+- exposes After Effects scripts via methods of interacting with the frontend to the user
+- recieves data from After Effects to show an updated view of the composition (the custom timeline)
+
+### 2. Communication with After Effects
+
+- [`CSInterface.js`](./src/CSInterface.js) exposes API points and is provided from Adobe
+- [`Manifest.xml`](./src/CSXS/manifest.xml) tells After Effects and other Adobe programs about the extension, the applications it can be used in and describes the [`<MainPath>./index.html</MainPath>`](./src/CSXS/manifest.xml#L21) (frontend entry point of the extension) and  [`<ScriptPath>./host/index.jsx</ScriptPath>`](./src/CSXS/manifest.xml#L22) (After Effects scripting functions to be called)
+- With both pahts provided, a new CSInterface can be created [`const csInterface = new window.CSInterface();`](/src/App.jsx#L127) which can then call functions from the linked [After Effects script `index.jsx`](/src/host/index.jsx) like [`csInterface.evalScript("getCompData()", (result) => { [..]`](/src/App.jsx#L129)
+
+### 3. Bundling React App with CEP extension architecture
+
+- [Webpack](webpack.config.js) bundles the React App, CSInterface.js, Manifest.xml and index.jsx into the `dist/` folder while keeping the proper paths in the Manifest.xml and not minifying CSInterface.js and index.jsx
+  -  React entry point is bundled: [`'client-bundle': './src/index.js'`](/webpack.config.js#L12)
+  -  using `CopyWebpackPlugin` bundling of CSInterface.js, Manifest.xml and index.jsx is [bypassed and each one moved into a specified location in dist/](/webpack.config.js#L58)
+  -  _Hot Reload and Developement were implemented mode to help in the developement process_
+-  A batch script is run after `npm run build`: [`"build": "webpack --mode production && npm run copy"`](/package.json#L8) which copies the CEP extension in the proper folder: [`"copy": "copy-to-cep.bat"`](/package.json#L9), [`xcopy /E /I /Y dist "%CommonProgramFiles(x86)%\Adobe\CEP\extensions\soundsync"`](/copy-to-cep.bat#L2)
 
 ## Interface Architecture
 
